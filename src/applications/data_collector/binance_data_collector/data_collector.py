@@ -52,4 +52,5 @@ class BinanceDataCollector(DataCollector):
             self.logger.error(f"{e}")
 
     def stop(self) -> None:
+        self.logger.info(f"Stop collecting data for symbol {self.symbol}...")
         self.binance_client.stop()

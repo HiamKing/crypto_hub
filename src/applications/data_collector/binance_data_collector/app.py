@@ -1,6 +1,6 @@
 import time
 from .data_collector import BinanceDataCollector
-from .constants import SYMBOL_LIST
+from .constants import SYMBOL_LIST, CRAWL_INTERVAL
 
 
 def main():
@@ -12,7 +12,7 @@ def main():
         while True:
             for data_collector in data_collectors:
                 data_collector.start()
-            time.sleep(5)
+            time.sleep(CRAWL_INTERVAL)
     except Exception as e:
         print(e)
     finally:
