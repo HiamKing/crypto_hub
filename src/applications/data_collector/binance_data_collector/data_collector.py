@@ -17,7 +17,7 @@ class BinanceDataCollector(DataCollector):
             api_secret=BINANCE_SECRET,
             on_message=self.message_handler)
         self.logger = get_logger(
-            f"{symbol} data collector",
+            f"Binance {symbol} data collector",
             f"{os.path.dirname(os.path.realpath(__file__))}/logs/binance_data_collector.log")
 
     def message_handler(self, _, message: str) -> None:

@@ -12,6 +12,7 @@ class TwitterDataCollector(DataCollector):
     def __init__(self) -> None:
         super().__init__()
         self.twitter_crawler = snstwitter.TwitterSearchScraper(self.build_twitter_query())
+        # Last news should be get from db
         self.last_tweet_id = None
         self.logger = get_logger(
             "Twitter data collector",
