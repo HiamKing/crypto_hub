@@ -1,7 +1,8 @@
 SYMBOL_LIST = [
-    "BTCUSDT", "LUNAUSDT", "ETHUSDT", "BNBUSDT", "SOLUSDT",
-    "DOGEUSDT", "ETHBTC", "BNBBTC", "DOGEBTC", "SOLBTC",
-    "SHIBUSDT", "TRXBTC", "XRPUSDT"
+    "btcusdt", "lunausdt", "ethusdt", "bnbusdt", "xrpusdt",
+    "dogeusdt"
 ]
+
+SUBCRIBE_CHANNELS = ['ticker', 'kline_1m', 'kline_1h', 'kline_1d', 'kline_1w', 'kline_1M']
 
 CRAWL_INTERVAL = 5  # 5 secs
