@@ -14,9 +14,8 @@ def main():
         while True:
             for data_collector in post_data_collectors:
                 data_collector.start()
-            # for data_collector in news_data_collectors:
-            #     data_collector.start()
-            print("-"*150)
+            for data_collector in news_data_collectors:
+                data_collector.start()
             time.sleep(CRAWL_INTERVAL)
     except Exception as e:
         print(e)

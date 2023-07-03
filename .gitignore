@@ -2,3 +2,4 @@ secret.*
 *.log
 __pycache__
 test*
+.storage
