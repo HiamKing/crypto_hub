@@ -5,7 +5,7 @@ import snscrape.modules.twitter as snstwitter
 
 from ..base_data_collector.data_collector import DataCollector
 from .constants import SYMBOL_LIST, MAX_PULL_TWEETS, CRAWL_INTERVAL
-from utils.logger import get_logger
+from applications.utils.logger import get_logger
 
 
 class TwitterDataCollector(DataCollector):

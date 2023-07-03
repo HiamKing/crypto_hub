@@ -4,7 +4,7 @@ import requests
 
 from ..base_data_collector.data_collector import DataCollector
 from .constants import SYMBOL_ID_MAPPING
-from utils.logger import get_logger
+from applications.utils.logger import get_logger
 
 
 class CMCNewsDataCollector(DataCollector):

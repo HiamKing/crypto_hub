@@ -1,0 +1,2 @@
+TICKER_INFO_KAFKA_TOPIC = "ticker.24h-info"
+KLINES_KAFKA_TOPIC = "klines"

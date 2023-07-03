@@ -1,13 +1,15 @@
 import os
 import json
-from typing import Dict, Any
 from unicorn_binance_websocket_api import BinanceWebSocketApiManager
 from confluent_kafka import Producer
 
+from applications.utils.logger import get_logger
 from ..base_data_collector.data_collector import DataCollector
 from .config import KAFKA_CONFIG
-from .constants import SUBCRIBE_CHANNELS, SYMBOL_LIST
-from utils.logger import get_logger
+from .constants import (
+    SUBCRIBE_CHANNELS, SYMBOL_LIST, TICKER_INFO_EVENT_TYPE,
+    KLINES_EVENT_TYPE, TICKER_INFO_KAFKA_TOPIC, KLINES_KAFKA_TOPIC
+)
 
 
 class BinanceDataCollector(DataCollector):
@@ -26,10 +28,10 @@ class BinanceDataCollector(DataCollector):
 
         json_result = json_result["data"]
 
-        if json_result["e"] == "24hrTicker":
-            self.producer.produce("ticket.24h-info", json.dumps(json_result))
-        if json_result["e"] == "kline":
-            self.producer.produce("klines", json.dumps(json_result))
+        if json_result["e"] == TICKER_INFO_EVENT_TYPE:
+            self.producer.produce(TICKER_INFO_KAFKA_TOPIC, json.dumps(json_result))
+        if json_result["e"] == KLINES_EVENT_TYPE:
+            self.producer.produce(KLINES_KAFKA_TOPIC, json.dumps(json_result))
         # Update metrics here...................................
 
     def collect_data(self) -> None:
