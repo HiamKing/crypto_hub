@@ -21,37 +21,16 @@ class BinanceDataCollector(DataCollector):
 
     def message_handler(self, message: str) -> None:
         json_result = json.loads(message)
-        # Check using type for now
         if "result" in json_result and not json_result["result"]:
             return
+
         json_result = json_result["data"]
 
         if json_result["e"] == "24hrTicker":
-            self.ticker_handler(json_result)
+            self.producer.produce("ticket.24h-info", json.dumps(json_result))
         if json_result["e"] == "kline":
-            self.klines_handler(json_result)
+            self.producer.produce("klines", json.dumps(json_result))
         # Update metrics here...................................
-
-    def ticker_handler(self, ticker_info: Dict[str, Any]) -> None:
-        print(ticker_info["s"], "ticket info")
-        # self.producer.produce(f"ticket.{self.symbol}.24h-info", json.dumps(ticker_info))
-
-    def klines_handler(self, klines_result: Dict[str, Any]) -> None:
-        # Get sample kline time to get the right appending topic
-        if klines_result["k"]["i"] == "1m":
-            print(klines_result["s"], "minute kline")
-        if klines_result["k"]["i"] == "1h":
-            print(klines_result["s"], "hour kline")
-        if klines_result["k"]["i"] == "1d":
-            print(klines_result["s"], "day kline")
-        if klines_result["k"]["i"] == "1w":
-            print(klines_result["s"], "week kline")
-        if klines_result["k"]["i"] == "1M":
-            print(klines_result["s"], "Month kline")
-        # self.producer.produce(f"ticket.{self.symbol}.24h-info", json.dumps({
-        #     "symbol": self.symbol,
-        #     "result": klines_result,
-        # }))
 
     def collect_data(self) -> None:
         self.binance_client.create_stream(
