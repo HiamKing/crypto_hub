@@ -81,7 +81,7 @@ class ReLabelAvroHDFSWriter(AvroHDFSWriter):
 
         # # If current file size > MAX_FILE_SIZE flush to hdfs
         if self.avro_writer.sync() > self.max_file_size:
-            self.flush_to_hdfs(self.tmp_file, self.get_hdfs_file_name())
+            self.flush_to_hdfs(self.tmp_file.name, self.get_hdfs_file_name())
             self.close_tmpfile()
             self.recreate_tmpfile()
             return True

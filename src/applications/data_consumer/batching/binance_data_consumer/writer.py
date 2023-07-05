@@ -1,5 +1,6 @@
 from typing import Dict, Any
 from logging import Logger
+from datetime import datetime
 
 from ...base.writer import ReLabelAvroHDFSWriter
 from .constants import MAX_FILE_SIZE
@@ -12,7 +13,8 @@ class KlinesDataWriter(ReLabelAvroHDFSWriter):
         super().__init__(HADOOP_URL, HADOOP_USER, schema, fields_mapping, MAX_FILE_SIZE, logger)
 
     def get_hdfs_file_name(self) -> str:
-        return "/binance_data/klines_data"
+        now = datetime.utcnow()
+        return f"/data/binance/klines_data/{now.date().strftime('%Y/%m/%d')}/records.{int(round(now.timestamp()))}.avro"
 
 
 class TickerInfoDataWriter(ReLabelAvroHDFSWriter):
@@ -21,4 +23,5 @@ class TickerInfoDataWriter(ReLabelAvroHDFSWriter):
         super().__init__(HADOOP_URL, HADOOP_USER, schema, fields_mapping, MAX_FILE_SIZE, logger)
 
     def get_hdfs_file_name(self) -> str:
-        return "/"
+        now = datetime.utcnow()
+        return f"/data/binance/ticker_info_data/{now.date().strftime('%Y/%m/%d')}/records.{int(round(now.timestamp()))}.avro"

@@ -39,8 +39,8 @@ class BinanceDataConsumer(DataConsumer):
                 hdfs_commit = self.ticker_info_writer.write(msg.value().decode("utf-8"))
             if msg.topic() == KLINES_KAFKA_TOPIC:
                 hdfs_commit = self.kline_writer.write(msg.value().decode("utf-8"))
-            # if hdfs_commit:
-            #     self.consumer.commit(msg)
+            if hdfs_commit:
+                self.consumer.commit(msg)
 
     def start(self) -> None:
         self.consumer.subscribe([TICKER_INFO_KAFKA_TOPIC, KLINES_KAFKA_TOPIC])
