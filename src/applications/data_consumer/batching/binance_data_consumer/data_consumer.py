@@ -8,7 +8,7 @@ from .constants import (
     KLINES_FIELDS_MAPPING, TICKER_INFO_FIELDS_MAPPING
 )
 from applications.utils.logger import get_logger
-from .writer import KlineDataWriter, TickerInfoDataWriter
+from .writer import KlinesDataWriter, TickerInfoDataWriter
 from ....utils.schema import KLINES_FILE_SCHEMA, TICKER_INFO_FILE_SCHEMA
 
 
@@ -19,7 +19,7 @@ class BinanceDataConsumer(DataConsumer):
         self.logger = get_logger(
             "Binance data consumer",
             f"{os.path.dirname(os.path.realpath(__file__))}/logs/binance_data_consumer.log")
-        self.kline_writer = KlineDataWriter(
+        self.kline_writer = KlinesDataWriter(
             KLINES_FILE_SCHEMA, KLINES_FIELDS_MAPPING, self.logger)
         self.ticker_info_writer = TickerInfoDataWriter(
             TICKER_INFO_FILE_SCHEMA, TICKER_INFO_FIELDS_MAPPING, self.logger)

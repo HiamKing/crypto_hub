@@ -4,14 +4,14 @@ import json
 
 KLINES_FILE_SCHEMA = json.dumps({
     "type": "record",
-    "name": "KlineEvent",
+    "name": "KlinesEvent",
     "fields": [
         {"name": "event_type", "type": "string"},
         {"name": "event_time", "type": "long"},
         {"name": "symbol", "type": "string"},
         {"name": "kline", "type": {
             "type": "record",
-            "name": "KlineData",
+            "name": "KlinesData",
             "fields": [
                 {"name": "start_time", "type": "long"},
                 {"name": "close_time", "type": "long"},
