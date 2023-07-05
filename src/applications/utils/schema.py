@@ -2,7 +2,7 @@ import json
 
 # Note: This is avro file schema. All parent fields and nested fields need to have different names
 
-KLINE_FILE_SCHEMA = json.dumps({
+KLINES_FILE_SCHEMA = json.dumps({
     "type": "record",
     "name": "KlineEvent",
     "fields": [

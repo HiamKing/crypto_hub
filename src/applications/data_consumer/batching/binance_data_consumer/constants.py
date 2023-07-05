@@ -3,7 +3,7 @@ KLINES_KAFKA_TOPIC = "klines"
 
 MAX_FILE_SIZE = 10485760  # 10 mb
 
-KLINE_FIELDS_MAPPING = {
+KLINES_FIELDS_MAPPING = {
     "e": {"name": "event_type", "type": "string"},
     "E": {"name": "event_time", "type": "long"},
     "s": {"name": "symbol", "type": "string"},

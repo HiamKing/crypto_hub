@@ -1,6 +1,8 @@
 
 import tempfile
+import json
 import avro.schema
+from typing import Dict, Any
 from avro.datafile import DataFileWriter
 from avro.io import DatumWriter
 from logging import Logger
@@ -39,3 +41,49 @@ class AvroHDFSWriter(HDFSWriter):
     def close_tmpfile(self) -> None:
         self.tmp_file.close()
         self.avro_writer.close()
+
+
+class ReLabelAvroHDFSWriter(AvroHDFSWriter):
+    def __init__(
+            self, hdfs_url: str, user: str, schema: str,
+            fields_mapping: Dict[str, Any], max_file_size: int, logger: Logger) -> None:
+        super().__init__(schema, hdfs_url, user, logger)
+        self.fields_mapping = fields_mapping
+        self.max_file_size = max_file_size
+
+    def convert_field_name(self, record: Dict[str, Any], new_record: Dict[str, Any]) -> None:
+        # Only support for dict and atomic fields for now
+        for key, val in record.items():
+            if key not in self.fields_mapping:
+                continue
+
+            if type(val) == dict:
+                new_record[self.fields_mapping[key]["name"]] = {}
+                self.convert_field_name(val, new_record[self.fields_mapping[key]["name"]])
+            elif self.fields_mapping[key]["type"] == "long":
+                new_record[self.fields_mapping[key]["name"]] = int(val)
+            elif self.fields_mapping[key]["type"] == "double":
+                new_record[self.fields_mapping[key]["name"]] = float(val)
+            elif self.fields_mapping[key]["type"] == "boolean":
+                new_record[self.fields_mapping[key]["name"]] = bool(val)
+            else:
+                new_record[self.fields_mapping[key]["name"]] = val
+
+    def get_hdfs_file_name(self) -> str:
+        raise NotImplementedError()
+
+    def write(self, message: str) -> bool:
+        record = json.loads(message)
+        normalized_record = {}
+        self.convert_field_name(record, normalized_record)
+        self.avro_writer.append(normalized_record)
+        self.avro_writer.flush()
+
+        # # If current file size > MAX_FILE_SIZE flush to hdfs
+        if self.avro_writer.sync() > self.max_file_size:
+            self.flush_to_hdfs(self.tmp_file, self.get_hdfs_file_name())
+            self.close_tmpfile()
+            self.recreate_tmpfile()
+            return True
+
+        return False

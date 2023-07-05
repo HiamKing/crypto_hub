@@ -5,11 +5,11 @@ from ...base.data_consumer import DataConsumer
 from .config import KAFKA_CONFIG
 from .constants import (
     TICKER_INFO_KAFKA_TOPIC, KLINES_KAFKA_TOPIC,
-    KLINE_FIELDS_MAPPING, TICKER_INFO_FIELDS_MAPPING
+    KLINES_FIELDS_MAPPING, TICKER_INFO_FIELDS_MAPPING
 )
 from applications.utils.logger import get_logger
-from .writer import BinanceDataWriter
-from ....utils.schema import KLINE_FILE_SCHEMA, TICKER_INFO_FILE_SCHEMA
+from .writer import KlineDataWriter, TickerInfoDataWriter
+from ....utils.schema import KLINES_FILE_SCHEMA, TICKER_INFO_FILE_SCHEMA
 
 
 class BinanceDataConsumer(DataConsumer):
@@ -19,9 +19,9 @@ class BinanceDataConsumer(DataConsumer):
         self.logger = get_logger(
             "Binance data consumer",
             f"{os.path.dirname(os.path.realpath(__file__))}/logs/binance_data_consumer.log")
-        self.kline_writer = BinanceDataWriter(
-            KLINE_FILE_SCHEMA, KLINE_FIELDS_MAPPING, self.logger)
-        self.ticker_info_writer = BinanceDataWriter(
+        self.kline_writer = KlineDataWriter(
+            KLINES_FILE_SCHEMA, KLINES_FIELDS_MAPPING, self.logger)
+        self.ticker_info_writer = TickerInfoDataWriter(
             TICKER_INFO_FILE_SCHEMA, TICKER_INFO_FIELDS_MAPPING, self.logger)
 
     def consume_data(self) -> None:
@@ -39,8 +39,8 @@ class BinanceDataConsumer(DataConsumer):
                 hdfs_commit = self.ticker_info_writer.write(msg.value().decode("utf-8"))
             if msg.topic() == KLINES_KAFKA_TOPIC:
                 hdfs_commit = self.kline_writer.write(msg.value().decode("utf-8"))
-            if hdfs_commit:
-                self.consumer.commit(msg)
+            # if hdfs_commit:
+            #     self.consumer.commit(msg)
 
     def start(self) -> None:
         self.consumer.subscribe([TICKER_INFO_KAFKA_TOPIC, KLINES_KAFKA_TOPIC])
