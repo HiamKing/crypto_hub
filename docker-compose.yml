@@ -132,148 +132,86 @@ services:
       crypto_hub_net:
         ipv4_address: 172.20.0.7
 
-  # namenode:
-  #   image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
-  #   container_name: namenode
-  #   hostname: namenode
-  #   ports:
-  #     - 9870:9870
-  #   environment:
-  #     - CLUSTER_NAME=coin_hub
-  #   env_file:
-  #     - ./hadoop/hadoop.env
-  #   deploy:
-  #     mode: replicated
-  #     replicas: 1
-  #     restart_policy:
-  #       condition: on-failure
-  #   volumes:
-  #     - ../storage/hadoop/namenode:/hadoop/dfs/name
-  #   networks:
-  #     crypto_hub_net:
-  #       ipv4_address: 172.20.0.8
+  namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: namenode
+    hostname: namenode
+    ports:
+      - 9870:9870
+    environment:
+      - CLUSTER_NAME=crypto_hub
+    env_file:
+      - ./hadoop/hadoop.env
+    deploy:
+      mode: replicated
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - ./.storage/hadoop/namenode:/hadoop/dfs/name
+    networks:
+      crypto_hub_net:
+        ipv4_address: 172.20.0.8
 
-  # datanode-1:
-  #   image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
-  #   container_name: datanode-1
-  #   hostname: datanode-1
-  #   ports:
-  #     - 19864:9864
-  #   environment:
-  #     - SERVICE_PRECONDITION=namenode:9870
-  #   env_file:
-  #     - ./hadoop/hadoop.env
-  #   deploy:
-  #     mode: global
-  #     restart_policy:
-  #       condition: on-failure
-  #   volumes:
-  #   - ../storage/hadoop/datanode-1:/hadoop/dfs/data
-  #   networks:
-  #     crypto_hub_net:
-  #       ipv4_address: 172.20.0.9
+  datanode-1:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode-1
+    hostname: datanode-1
+    ports:
+      - 19864:9864
+    environment:
+      - SERVICE_PRECONDITION=namenode:9870
+    env_file:
+      - ./hadoop/hadoop.env
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+    volumes:
+    - ./.storage/hadoop/datanode-1:/hadoop/dfs/data
+    networks:
+      crypto_hub_net:
+        ipv4_address: 172.20.0.9
 
-  # datanode-2:
-  #   image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
-  #   container_name: datanode-2
-  #   hostname: datanode-2
-  #   ports:
-  #     - 29864:9864
-  #   environment:
-  #     - SERVICE_PRECONDITION=namenode:9870
-  #   env_file:
-  #     - ./hadoop/hadoop.env
-  #   deploy:
-  #     mode: global
-  #     restart_policy:
-  #       condition: on-failure
-  #   volumes:
-  #   - ../storage/hadoop/datanode-2:/hadoop/dfs/data
-  #   networks:
-  #     crypto_hub_net:
-  #       ipv4_address: 172.20.0.10
+  datanode-2:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode-2
+    hostname: datanode-2
+    ports:
+      - 29864:9864
+    environment:
+      - SERVICE_PRECONDITION=namenode:9870
+    env_file:
+      - ./hadoop/hadoop.env
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+    volumes:
+    - ./.storage/hadoop/datanode-2:/hadoop/dfs/data
+    networks:
+      crypto_hub_net:
+        ipv4_address: 172.20.0.10
 
-  # datanode-3:
-  #   image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
-  #   container_name: datanode-3
-  #   hostname: datanode-3
-  #   ports:
-  #     - 39864:9864
-  #   environment:
-  #     - SERVICE_PRECONDITION=namenode:9870
-  #   env_file:
-  #     - ./hadoop/hadoop.env
-  #   deploy:
-  #     mode: global
-  #     restart_policy:
-  #       condition: on-failure
-  #   volumes:
-  #     - ../storage/hadoop/datanode-3:/hadoop/dfs/data
-  #   networks:
-  #     crypto_hub_net:
-  #       ipv4_address: 172.20.0.11
-
-  # resourcemanager:
-  #   image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
-  #   container_name: resourcemanager
-  #   hostname: resourcemanager
-  #   ports:
-  #     - 8088:8088
-  #   environment:
-  #     SERVICE_PRECONDITION: "namenode:9870 datanode-1:9864 datanode-2:9864 datanode-3:9864"
-  #   env_file:
-  #     - ./hadoop/hadoop.env
-  #   deploy:
-  #     mode: replicated
-  #     replicas: 1
-  #     restart_policy:
-  #       condition: on-failure
-  #     placement:
-  #       constraints:
-  #         - node.hostname == akswnc4.aksw.uni-leipzig.de
-  #   healthcheck:
-  #     disable: true
-  #   networks:
-  #     crypto_hub_net:
-  #       ipv4_address: 172.20.0.12
-
-  # nodemanager:
-  #   image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
-  #   container_name: nodemanager
-  #   hostname: nodemanager
-  #   ports:
-  #     - 8042:8042
-  #   environment:
-  #     SERVICE_PRECONDITION: "namenode:9870 datanode-1:9864 datanode-2:9864 datanode-3:9864 resourcemanager:8088"
-  #   env_file:
-  #     - ./hadoop/hadoop.env
-  #   deploy:
-  #     mode: global
-  #     restart_policy:
-  #       condition: on-failure
-  #   networks:
-  #     crypto_hub_net:
-  #       ipv4_address: 172.20.0.13
-
-  # historyserver:
-  #   image: bde2020/hadoop-historyserver:2.0.0-hadoop3.2.1-java8
-  #   container_name: historyserver
-  #   hostname: historyserver
-  #   environment:
-  #     SERVICE_PRECONDITION: "namenode:9870 datanode-1:9864 datanode-2:9864 datanode-3:9864 resourcemanager:8088"
-  #   env_file:
-  #     - ./hadoop/hadoop.env
-  #   deploy:
-  #     mode: replicated
-  #     replicas: 1
-  #     placement:
-  #       constraints:
-  #         - node.hostname == akswnc4.aksw.uni-leipzig.de
-  #   volumes:
-  #     - ../storage/hadoop/hadoop_historyserver:/hadoop/yarn/timeline
-  #   networks:
-  #     crypto_hub_net:
-  #       ipv4_address: 172.20.0.14
+  datanode-3:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode-3
+    hostname: datanode-3
+    ports:
+      - 39864:9864
+    environment:
+      - SERVICE_PRECONDITION=namenode:9870
+    env_file:
+      - ./hadoop/hadoop.env
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+    volumes:
+      - ./.storage/hadoop/datanode-3:/hadoop/dfs/data
+    networks:
+      crypto_hub_net:
+        ipv4_address: 172.20.0.11
 
   # cassandra:
   #   image: cassandra:4.0.5
