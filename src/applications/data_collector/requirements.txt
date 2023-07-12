@@ -15,6 +15,7 @@ cryptography==41.0.1
 cssselect==1.2.0
 dateparser==1.1.8
 distlib==0.3.6
+dnspython==2.3.0
 filelock==3.8.0
 Flask==2.3.2
 Flask-RESTful==0.3.10
@@ -41,6 +42,7 @@ pyasn1-modules==0.3.0
 pycparser==2.21
 pycryptodome==3.18.0
 PyDispatcher==2.0.7
+pymongo==4.4.0
 pyOpenSSL==23.2.0
 PySocks==1.7.1
 python-dateutil==2.8.2
