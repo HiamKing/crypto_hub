@@ -112,6 +112,8 @@ class CMCPostsDataCollector(DataCollector):
         for post in cmc_posts:
             if post["gravityId"] == self.last_post_id:
                 break
+            if "textContent" not in post:
+                continue
 
             self.producer.produce(CMC_POSTS_KAFKA_TOPIC, json.dumps(post))
             if not first_post_id:

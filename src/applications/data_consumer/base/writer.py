@@ -57,9 +57,21 @@ class ReLabelAvroHDFSWriter(AvroHDFSWriter):
             if key not in self.fields_mapping:
                 continue
 
-            if type(val) == dict:
+            if self.fields_mapping[key]["type"] == "dict":
                 new_record[self.fields_mapping[key]["name"]] = {}
                 self.convert_field_name(val, new_record[self.fields_mapping[key]["name"]])
+            elif self.fields_mapping[key]["type"] == "array":
+                # Support relabel for array one layer only
+                new_record[self.fields_mapping[key]["name"]] = []
+                for item in val:
+                    if type(item) == dict:
+                        new_item = {}
+                        self.convert_field_name(item, new_item)
+                    else:
+                        new_item = item
+                    new_record[self.fields_mapping[key]["name"]].append(new_item)
+            elif self.fields_mapping[key]["type"] == "int":
+                new_record[self.fields_mapping[key]["name"]] = int(val)
             elif self.fields_mapping[key]["type"] == "long":
                 new_record[self.fields_mapping[key]["name"]] = int(val)
             elif self.fields_mapping[key]["type"] == "double":

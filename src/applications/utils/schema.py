@@ -28,9 +28,9 @@ KLINES_FILE_SCHEMA = json.dumps({
                 {"name": "is_closed", "type": "boolean"},
                 {"name": "quote_asset_vol", "type": "double"},
                 {"name": "buy_base_asset_vol", "type": "double"},
-                {"name": "buy_quote_asset_vol", "type": "double"},
+                {"name": "buy_quote_asset_vol", "type": "double"}
             ]
-        }},
+        }}
     ]
 })
 
@@ -60,6 +60,115 @@ TICKER_INFO_FILE_SCHEMA = json.dumps({
         {"name": "stats_close_time", "type": "long"},
         {"name": "first_trade_id", "type": "long"},
         {"name": "last_trade_id", "type": "long"},
-        {"name": "number_of_trade", "type": "long"},
+        {"name": "number_of_trade", "type": "long"}
+    ]
+})
+
+CMC_NEWS_SCHEMA = json.dumps({
+    "type": "record",
+    "name": "CMCNews",
+    "fields": [
+        {"name": "slug", "type": "string"},
+        {"name": "cover", "type": "string"},
+        {"name": "assets", "type": {
+            "type": "array",
+            "items": {
+                "type": "record",
+                "name": "NewsAssets",
+                "fields": [
+                    {"name": "name", "type": "string"},
+                    {"name": "coin_id", "type": "int"},
+                    {"name": "type", "type": "string"}
+                ]
+            }
+        }},
+        {"name": "created_at", "type": "string"},
+        {"name": "meta", "type": {
+            "type": "record",
+            "name": "CMCNewsMeta",
+            "fields": [
+                {"name": "title", "type": "string"},
+                {"name": "subtitle", "type": "string"},
+                {"name": "source_name", "type": "string"},
+                {"name": "max_char", "type": "int"},
+                {"name": "language", "type": "string"},
+                {"name": "status", "type": "string"},
+                {"name": "type", "type": "string"},
+                {"name": "visibility", "type": "boolean"},
+                {"name": "source_url", "type": "string"},
+                {"name": "id", "type": "string"},
+                {"name": "views", "type": "long"},
+                {"name": "created_at", "type": "string"},
+                {"name": "updated_at", "type": "string"},
+                {"name": "released_at", "type": "string"}
+            ]
+        }},
+        {"name": "type", "type": "string"}
+    ]
+})
+
+CMC_POSTS_SCHEMA = json.dumps({
+    "type": "record",
+    "name": "CMCPost",
+    "fields": [
+        {"name": "gravity_id", "type": "string"},
+        {"name": "owner", "type": {
+            "type": "record",
+            "name": "PostOwner",
+            "fields": [
+                {"name": "nickname", "type": "string"},
+                {"name": "handle", "type": "string"},
+                {"name": "avatar_id", "type": "string"},
+                {"name": "created_time", "type": "long"},
+                {"name": "type", "type": "int"},
+                {"name": "last_update_nickname", "type": ["long", "null"]},
+                {"name": "avatar", "type": {
+                    "type": "record",
+                    "name": "OwnerAvatar",
+                    "fields": [
+                        {"name": "url", "type": "string"},
+                    ]
+                }},
+                {"name": "vip", "type": "boolean"},
+                {"name": "guid", "type": "string"}
+            ]
+        }},
+        {"name": "root_id", "type": "string"},
+        {"name": "text_content", "type": "string"},
+        {"name": "comment_count", "type": "int"},
+        {"name": "like_count", "type": "int"},
+        {"name": "reactions", "type": {
+            "type": "array",
+            "items": {
+                "type": "record",
+                "name": "PostReactions",
+                "fields": [
+                    {"name": "gravity_id", "type": "string"},
+                    {"name": "type", "type": "int"},
+                    {"name": "count", "type": "int"}
+                ]
+            }
+        }},
+        {"name": "post_time", "type": "long"},
+        {"name": "type", "type": "int"},
+        {"name": "topics", "type": {
+            "type": "array",
+            "items": "string"
+        }},
+        {"name": "currencies", "type": {
+            "type": "array",
+            "items": {
+                "type": "record",
+                "name": "PostCurrencies",
+                "fields": [
+                    {"name": "id", "type": "int"},
+                    {"name": "symbol", "type": "string"},
+                    {"name": "slug", "type": "string"}
+                ]
+            }
+        }},
+        {"name": "bullish", "type": ["boolean", "null"]},
+        {"name": "repost_count", "type": "int"},
+        {"name": "language_code", "type": "string"}
     ]
 })
