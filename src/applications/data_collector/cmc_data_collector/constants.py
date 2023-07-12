@@ -17,3 +17,5 @@ SYMBOL_ID_MAPPING = {
 
 }
 CRAWL_INTERVAL = 10  # 10 secs
+CMC_POSTS_KAFKA_TOPIC = "cmc.posts"
+CMC_NEWS_KAFKA_TOPIC = "cmc.news"

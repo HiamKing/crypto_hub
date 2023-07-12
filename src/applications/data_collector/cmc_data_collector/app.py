@@ -6,7 +6,7 @@ from .constants import SYMBOL_LIST, CRAWL_INTERVAL
 def main():
     post_data_collectors = []
     news_data_collectors = []
-    for symbol in SYMBOL_LIST[:1]:
+    for symbol in SYMBOL_LIST:
         post_data_collectors.append(CMCPostsDataCollector(symbol))
         news_data_collectors.append(CMCNewsDataCollector(symbol))
 
@@ -21,6 +21,8 @@ def main():
         print(e)
     finally:
         for data_collector in post_data_collectors:
+            data_collector.stop()
+        for data_collector in news_data_collectors:
             data_collector.stop()
 
 

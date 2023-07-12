@@ -1,10 +1,19 @@
 import os
 from datetime import datetime, timedelta
+from pymongo import MongoClient
 import requests
+import json
+from confluent_kafka import Producer
 
-from ..base_data_collector.data_collector import DataCollector
-from .constants import SYMBOL_ID_MAPPING
 from applications.utils.logger import get_logger
+from ..base_data_collector.data_collector import DataCollector
+from .constants import (
+    SYMBOL_ID_MAPPING, CMC_POSTS_KAFKA_TOPIC, CMC_NEWS_KAFKA_TOPIC
+)
+from .config import KAFKA_CONFIG, MONGO_DB_HOST
+
+crypto_hub_db = MongoClient(MONGO_DB_HOST).get_database("crypto_hub")
+check_point_collection = crypto_hub_db["cmc_checkpoints"]
 
 
 class CMCNewsDataCollector(DataCollector):
@@ -12,11 +21,20 @@ class CMCNewsDataCollector(DataCollector):
         super().__init__()
         self.symbol = symbol
         self.base_url = "https://api.coinmarketcap.com/content/v3/news/aggregated"
-        # Last news should be get from db
-        self.last_news_id = None
+        self.last_news_id = self.get_last_news_id()
+        self.producer = Producer(KAFKA_CONFIG)
         self.logger = get_logger(
             f"CMC {symbol} news data collector",
             f"{os.path.dirname(os.path.realpath(__file__))}/logs/cmc_data_collector.log")
+
+    def get_last_news_id(self) -> str:
+        check_point = check_point_collection.find_one({
+            "symbol": self.symbol,
+            "type": "news",
+        })
+        if not check_point:
+            return ""
+        return check_point["check_point"]
 
     def collect_data(self) -> None:
         params = {
@@ -31,7 +49,7 @@ class CMCNewsDataCollector(DataCollector):
             if news["meta"]["id"] == self.last_news_id:
                 break
 
-            print(news)
+            self.producer.produce(CMC_NEWS_KAFKA_TOPIC, json.dumps(news))
             if not first_news_id:
                 first_news_id = news["meta"]["id"]
 
@@ -46,6 +64,18 @@ class CMCNewsDataCollector(DataCollector):
             self.logger.error(f"{e}")
 
     def stop(self) -> None:
+        self.producer.flush()
+        self.logger.info("Saving checkpoint for CMC news...")
+        check_point_collection.find_one_and_update(
+            {
+                "symbol": self.symbol,
+                "type": "news",
+            },
+            {
+                "$set": {"check_point": self.last_news_id}
+            },
+            upsert=True
+        )
         self.logger.info(f"Stop collecting news for symbol {self.symbol}...")
 
 
@@ -54,11 +84,20 @@ class CMCPostsDataCollector(DataCollector):
         super().__init__()
         self.symbol = symbol
         self.base_url = "https://api-gravity.coinmarketcap.com/gravity/v3/gravity/condition/query"
-        # Last post id should be get from db
-        self.last_post_id = None
+        self.last_post_id = self.get_last_post_id()
+        self.producer = Producer(KAFKA_CONFIG)
         self.logger = get_logger(
-            f"CMC {symbol} news data collector",
+            f"CMC {symbol} posts data collector",
             f"{os.path.dirname(os.path.realpath(__file__))}/logs/cmc_data_collector.log")
+
+    def get_last_post_id(self) -> str:
+        check_point = check_point_collection.find_one({
+            "symbol": self.symbol,
+            "type": "posts",
+        })
+        if not check_point:
+            return ""
+        return check_point["check_point"]
 
     def collect_data(self) -> None:
         payload = {
@@ -74,7 +113,7 @@ class CMCPostsDataCollector(DataCollector):
             if post["gravityId"] == self.last_post_id:
                 break
 
-            print(post)
+            self.producer.produce(CMC_POSTS_KAFKA_TOPIC, json.dumps(post))
             if not first_post_id:
                 first_post_id = post["gravityId"]
 
@@ -82,11 +121,23 @@ class CMCPostsDataCollector(DataCollector):
             self.last_post_id = first_post_id
 
     def start(self) -> None:
-        self.logger.info(f"Start collecting news for symbol {self.symbol}...")
+        self.logger.info(f"Start collecting posts for symbol {self.symbol}...")
         try:
             self.collect_data()
         except Exception as e:
             self.logger.error(f"{e}")
 
     def stop(self) -> None:
-        self.logger.info(f"Stop collecting news for symbol {self.symbol}...")
+        self.producer.flush()
+        self.logger.info("Saving checkpoint for CMC posts...")
+        check_point_collection.find_one_and_update(
+            {
+                "symbol": self.symbol,
+                "type": "posts",
+            },
+            {
+                "$set": {"check_point": self.last_post_id}
+            },
+            upsert=True
+        )
+        self.logger.info(f"Stop collecting posts for symbol {self.symbol}...")
