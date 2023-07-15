@@ -84,18 +84,19 @@ class ReLabelAvroHDFSWriter(AvroHDFSWriter):
     def get_hdfs_file_name(self) -> str:
         raise NotImplementedError()
 
-    def write(self, message: str) -> bool:
+    def write(self, message: str) -> str:
         record = json.loads(message)
         normalized_record = {}
+        hdfs_file = ""
         self.convert_field_name(record, normalized_record)
         self.avro_writer.append(normalized_record)
         self.avro_writer.flush()
 
         # # If current file size > MAX_FILE_SIZE flush to hdfs
         if self.avro_writer.sync() > self.max_file_size:
-            self.flush_to_hdfs(self.tmp_file.name, self.get_hdfs_file_name())
+            hdfs_file = self.get_hdfs_file_name()
+            self.flush_to_hdfs(self.tmp_file.name, hdfs_file)
             self.close_tmpfile()
             self.recreate_tmpfile()
-            return True
 
-        return False
+        return hdfs_file
