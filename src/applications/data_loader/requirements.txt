@@ -1,0 +1,6 @@
+confluent-kafka==2.2.0
+distlib==0.3.6
+filelock==3.8.0
+platformdirs==2.5.3
+py4j==0.10.9.7
+pyspark==3.4.1
