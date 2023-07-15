@@ -1,10 +1,28 @@
+import logging
 from typing import Dict, Any
 from logging import Logger
 from datetime import datetime
 
-from ...base.writer import ReLabelAvroHDFSWriter
-from .constants import MAX_FILE_SIZE
 from .config import HADOOP_URL, HADOOP_USER
+from .constants import (
+    MAX_FILE_SIZE, KLINES_FIELDS_MAPPING, TICKER_INFO_FIELDS_MAPPING,
+    TICKER_INFO_KAFKA_TOPIC, KLINES_KAFKA_TOPIC
+)
+from ...base.writer import ReLabelAvroHDFSWriter
+from ....utils.schema import KLINES_FILE_SCHEMA, TICKER_INFO_FILE_SCHEMA
+
+
+class BinanceDataWriter:
+    def __init__(self, logger: logging.Logger) -> None:
+        self.writers = {
+            TICKER_INFO_KAFKA_TOPIC: TickerInfoDataWriter(
+                TICKER_INFO_FILE_SCHEMA, TICKER_INFO_FIELDS_MAPPING, logger),
+            KLINES_KAFKA_TOPIC: KlinesDataWriter(
+                KLINES_FILE_SCHEMA, KLINES_FIELDS_MAPPING, logger)
+        }
+
+    def write(self, topic: str, msg: str) -> str:
+        return self.writers[topic].write(msg)
 
 
 class KlinesDataWriter(ReLabelAvroHDFSWriter):

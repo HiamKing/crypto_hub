@@ -1,30 +1,14 @@
 import os
-import logging
 from confluent_kafka import Consumer, Producer
 
-from ...base.data_consumer import DataConsumer
+from .writer import BinanceDataWriter
 from .config import CONSUMER_KAFKA_CONFIG, FE_KAFKA_CONFIG
 from .constants import (
     TICKER_INFO_KAFKA_TOPIC, KLINES_KAFKA_TOPIC,
-    KLINES_FIELDS_MAPPING, TICKER_INFO_FIELDS_MAPPING,
     FE_TOPIC_MAPPING
 )
 from applications.utils.logger import get_logger
-from .writer import KlinesDataWriter, TickerInfoDataWriter
-from ....utils.schema import KLINES_FILE_SCHEMA, TICKER_INFO_FILE_SCHEMA
-
-
-class BinanceDataWriter:
-    def __init__(self, logger: logging.Logger) -> None:
-        self.writers = {
-            TICKER_INFO_KAFKA_TOPIC: TickerInfoDataWriter(
-                TICKER_INFO_FILE_SCHEMA, TICKER_INFO_FIELDS_MAPPING, logger),
-            KLINES_KAFKA_TOPIC: KlinesDataWriter(
-                KLINES_FILE_SCHEMA, KLINES_FIELDS_MAPPING, logger)
-        }
-
-    def write(self, topic: str, msg: str) -> str:
-        return self.writers[topic].write(msg)
+from ...base.data_consumer import DataConsumer
 
 
 class BinanceDataConsumer(DataConsumer):
