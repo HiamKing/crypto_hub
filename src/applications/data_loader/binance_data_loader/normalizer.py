@@ -1,9 +1,10 @@
 from typing import Dict, Any
-
+from pyspark.sql import DataFrame
+from pyspark.sql.functions import to_timestamp, col
 from ..base_data_loader.normalizer import SparkNormalizer
-from .constants import FE_KLINES_KAFKA_TOPIC, FE_TICKER_INFO_KAFKA_TOPIC
+from .constants import FE_KLINES_KAFKA_TOPIC, FE_TICKER_INFO_KAFKA_TOPIC, KLINES_INTERVAL
 from .config import SPARK_APP_NAME, SPARK_CONFIG, SPARK_MASTER
-from applications.utils.schema import KLINES_FILE_SCHEMA
+from applications.utils.schema import KLINES_FILE_SCHEMA, TICKER_INFO_FILE_SCHEMA
 
 
 class BinanceDataNormalizer:
@@ -27,7 +28,24 @@ class KlinesDataNormalizer(SparkNormalizer):
         df = self.spark.read.format("avro")\
             .option("avroSchema", KLINES_FILE_SCHEMA)\
             .load(file_path)
-        df.show()
+        df = df.select("kline.*")
+        df = df.withColumn("start_time", to_timestamp(col("start_time").cast("double") / 1000))
+        df = df.withColumn("close_time", to_timestamp(col("close_time").cast("double") / 1000))
+        df = df.filter(col("is_closed") == True)  # noqa
+
+        for interval in KLINES_INTERVAL:
+            i_df = df.filter(col("interval") == interval)
+            self.save_data(i_df, interval)
+
+    def save_data(self, df: DataFrame, interval: str) -> None:
+        if df.isEmpty():
+            return
+
+        df.write.format("mongodb")\
+            .option("collection", "klines_" + interval)\
+            .option("upsertDocument", "false")\
+            .mode("append")\
+            .save()
 
 
 class TickerInfoDataNormalizer(SparkNormalizer):
@@ -36,3 +54,7 @@ class TickerInfoDataNormalizer(SparkNormalizer):
 
     def normalize_data(self, file_path: str) -> None:
         pass
+        # df = self.spark.read.format("avro")\
+        #     .option("avroSchema", TICKER_INFO_FILE_SCHEMA)\
+        #     .load(file_path)
+        # df.printSchema()
