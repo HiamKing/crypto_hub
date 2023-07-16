@@ -29,8 +29,8 @@ class KlinesDataNormalizer(SparkNormalizer):
             .option("avroSchema", KLINES_FILE_SCHEMA)\
             .load(file_path)
         df = df.select("kline.*")
-        df = df.withColumn("start_time", to_timestamp(col("start_time").cast("double") / 1000))
-        df = df.withColumn("close_time", to_timestamp(col("close_time").cast("double") / 1000))
+        df = df.withColumn("start_time", to_timestamp(col("start_time") / 1000))
+        df = df.withColumn("close_time", to_timestamp(col("close_time") / 1000))
         df = df.filter(col("is_closed") == True)  # noqa
 
         for interval in KLINES_INTERVAL:
@@ -43,7 +43,7 @@ class KlinesDataNormalizer(SparkNormalizer):
 
         df.write.format("mongodb")\
             .option("collection", "klines_" + interval)\
-            .option("upsertDocument", "false")\
+            .option("upsertDocument", False)\
             .mode("append")\
             .save()
 
@@ -53,8 +53,20 @@ class TickerInfoDataNormalizer(SparkNormalizer):
         super().__init__(app_name, master, config)
 
     def normalize_data(self, file_path: str) -> None:
-        pass
-        # df = self.spark.read.format("avro")\
-        #     .option("avroSchema", TICKER_INFO_FILE_SCHEMA)\
-        #     .load(file_path)
-        # df.printSchema()
+        df = self.spark.read.format("avro")\
+            .option("avroSchema", TICKER_INFO_FILE_SCHEMA)\
+            .load(file_path)
+        df = df.withColumn("stats_open_time", to_timestamp(col("stats_open_time") / 1000))
+        df = df.withColumn("stats_close_time", to_timestamp(col("stats_close_time") / 1000))
+        df = df.select("symbol", "last_price", "stats_open_time", "stats_close_time")
+        self.save_data(df)
+
+    def save_data(self, df: DataFrame) -> None:
+        if df.isEmpty():
+            return
+
+        df.write.format("mongodb")\
+            .option("collection", "24h_ticker_info")\
+            .option("upsertDocument", False)\
+            .mode("append")\
+            .save()

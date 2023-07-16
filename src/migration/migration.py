@@ -15,11 +15,12 @@ for collection in n_collections:
 
 # Create time series collections
 ts_collections = [
-    {"name": "klines_1m", "timeseries": {"timeField": "start_time", "granularity": "minutes"}},
-    {"name": "klines_1h", "timeseries": {"timeField": "start_time", "granularity": "hours"}},
-    {"name": "klines_1d", "timeseries": {"timeField": "start_time", "granularity": "hours"}},
-    {"name": "klines_1w", "timeseries": {"timeField": "start_time", "granularity": "hours"}},
-    {"name": "klines_1M", "timeseries": {"timeField": "start_time", "granularity": "hours"}},
+    {"name": "klines_1m", "timeseries": {"timeField": "start_time", "metaField": "symbol", "granularity": "minutes"}},
+    {"name": "klines_1h", "timeseries": {"timeField": "start_time", "metaField": "symbol", "granularity": "hours"}},
+    {"name": "klines_1d", "timeseries": {"timeField": "start_time", "metaField": "symbol", "granularity": "hours"}},
+    {"name": "klines_1w", "timeseries": {"timeField": "start_time", "metaField": "symbol", "granularity": "hours"}},
+    {"name": "klines_1M", "timeseries": {"timeField": "start_time", "metaField": "symbol", "granularity": "hours"}},
+    {"name": "24h_ticker_info", "timeseries": {"timeField": "stats_close_time", "metaField": "symbol", "granularity": "seconds"}},
 ]
 
 for collection in ts_collections:
