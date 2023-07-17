@@ -7,7 +7,7 @@ db = c["crypto_hub"]
 created_collections = db.list_collection_names()
 
 # Create normal collections
-n_collections = ["cmc.checkpoints", "cmc.news", "cmc.posts"]
+n_collections = ["cmc.checkpoints", "cmc.news", "cmc.posts", "cmc.news_assoc"]
 
 for collection in n_collections:
     if collection not in created_collections:
