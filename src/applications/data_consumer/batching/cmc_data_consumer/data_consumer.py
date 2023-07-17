@@ -1,28 +1,25 @@
 import os
-from confluent_kafka import Consumer
+from confluent_kafka import Consumer, Producer
 
 from ...base.data_consumer import DataConsumer
-from .config import KAFKA_CONFIG
+from .config import KAFKA_CONFIG, FE_KAFKA_CONFIG
 from .constants import (
     CMC_POSTS_KAFKA_TOPIC, CMC_NEWS_KAFKA_TOPIC,
-    NEWS_FIELDS_MAPPING, POSTS_FIELDS_MAPPING
+    FE_TOPIC_MAPPING
 )
 from applications.utils.logger import get_logger
-from .writer import NewsDataWriter, PostsDataWriter
-from ....utils.schema import CMC_NEWS_SCHEMA, CMC_POSTS_SCHEMA
+from .writer import CMCDataWriter
 
 
 class CMCDataConsumer(DataConsumer):
     def __init__(self) -> None:
         super().__init__()
         self.consumer = Consumer(KAFKA_CONFIG)
+        self.fe_producer = Producer(FE_KAFKA_CONFIG)
         self.logger = get_logger(
             "CMC data consumer",
             f"{os.path.dirname(os.path.realpath(__file__))}/logs/cmc_data_consumer.log")
-        self.news_writer = NewsDataWriter(
-            CMC_NEWS_SCHEMA, NEWS_FIELDS_MAPPING, self.logger)
-        self.posts_writer = PostsDataWriter(
-            CMC_POSTS_SCHEMA, POSTS_FIELDS_MAPPING, self.logger)
+        self.writer = CMCDataWriter(self.logger)
 
     def consume_data(self) -> None:
         while True:
@@ -34,12 +31,12 @@ class CMCDataConsumer(DataConsumer):
                 print("Consumer error: {}".format(msg.error()))
                 continue
 
-            hdfs_commit = False
-            if msg.topic() == CMC_NEWS_KAFKA_TOPIC:
-                hdfs_commit = self.news_writer.write(msg.value().decode("utf-8"))
-            if msg.topic() == CMC_POSTS_KAFKA_TOPIC:
-                hdfs_commit = self.posts_writer.write(msg.value().decode("utf-8"))
-            if hdfs_commit:
+            hdfs_file = ""
+            hdfs_file = self.writer.write(msg.topic(), msg.value().decode("utf-8"))
+            if hdfs_file:
+                self.fe_producer.produce(
+                    FE_TOPIC_MAPPING[msg.topic()],
+                    bytes(hdfs_file, encoding='utf-8'))
                 self.consumer.commit(msg)
 
     def start(self) -> None:
