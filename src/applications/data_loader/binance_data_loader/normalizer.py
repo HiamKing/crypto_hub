@@ -42,7 +42,7 @@ class KlinesDataNormalizer(SparkNormalizer):
             return
 
         df.write.format("mongodb")\
-            .option("collection", "klines_" + interval)\
+            .option("collection", "binance.klines_" + interval)\
             .option("upsertDocument", False)\
             .mode("append")\
             .save()
@@ -66,7 +66,7 @@ class TickerInfoDataNormalizer(SparkNormalizer):
             return
 
         df.write.format("mongodb")\
-            .option("collection", "24h_ticker_info")\
+            .option("collection", "binance.24h_ticker")\
             .option("upsertDocument", False)\
             .mode("append")\
             .save()

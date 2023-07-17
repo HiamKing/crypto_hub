@@ -7,7 +7,7 @@ db = c["crypto_hub"]
 created_collections = db.list_collection_names()
 
 # Create normal collections
-n_collections = ["cmc_checkpoints"]
+n_collections = ["cmc.checkpoints", "cmc.news", "cmc.posts"]
 
 for collection in n_collections:
     if collection not in created_collections:
@@ -15,12 +15,12 @@ for collection in n_collections:
 
 # Create time series collections
 ts_collections = [
-    {"name": "klines_1m", "timeseries": {"timeField": "start_time", "metaField": "symbol", "granularity": "minutes"}},
-    {"name": "klines_1h", "timeseries": {"timeField": "start_time", "metaField": "symbol", "granularity": "hours"}},
-    {"name": "klines_1d", "timeseries": {"timeField": "start_time", "metaField": "symbol", "granularity": "hours"}},
-    {"name": "klines_1w", "timeseries": {"timeField": "start_time", "metaField": "symbol", "granularity": "hours"}},
-    {"name": "klines_1M", "timeseries": {"timeField": "start_time", "metaField": "symbol", "granularity": "hours"}},
-    {"name": "24h_ticker_info", "timeseries": {"timeField": "stats_close_time", "metaField": "symbol", "granularity": "seconds"}},
+    {"name": "binance.klines.1m", "timeseries": {"timeField": "start_time", "metaField": "symbol", "granularity": "minutes"}},
+    {"name": "binance.klines.1h", "timeseries": {"timeField": "start_time", "metaField": "symbol", "granularity": "hours"}},
+    {"name": "binance.klines.1d", "timeseries": {"timeField": "start_time", "metaField": "symbol", "granularity": "hours"}},
+    {"name": "binance.klines.1w", "timeseries": {"timeField": "start_time", "metaField": "symbol", "granularity": "hours"}},
+    {"name": "binance.klines.1M", "timeseries": {"timeField": "start_time", "metaField": "symbol", "granularity": "hours"}},
+    {"name": "binance.24h_ticker", "timeseries": {"timeField": "stats_close_time", "metaField": "symbol", "granularity": "seconds"}},
 ]
 
 for collection in ts_collections:

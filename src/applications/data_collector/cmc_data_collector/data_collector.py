@@ -13,7 +13,7 @@ from .constants import (
 from .config import KAFKA_CONFIG, MONGO_DB_HOST
 
 crypto_hub_db = MongoClient(MONGO_DB_HOST).get_database("crypto_hub")
-check_point_collection = crypto_hub_db["cmc_checkpoints"]
+check_point_collection = crypto_hub_db["cmc.checkpoints"]
 
 
 class CMCNewsDataCollector(DataCollector):
