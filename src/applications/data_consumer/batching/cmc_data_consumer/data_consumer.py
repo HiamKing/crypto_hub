@@ -51,4 +51,5 @@ class CMCDataConsumer(DataConsumer):
 
     def stop(self) -> None:
         self.logger.info("Stop consuming CMC data")
+        self.fe_producer.flush()
         self.consumer.close()

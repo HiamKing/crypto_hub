@@ -21,7 +21,7 @@ class CMCDataWriter:
         }
 
     def write(self, topic: str, msg: str) -> str:
-        self.writers[topic].write(msg)
+        return self.writers[topic].write(msg)
 
 
 class NewsDataWriter(ReLabelAvroHDFSWriter):
