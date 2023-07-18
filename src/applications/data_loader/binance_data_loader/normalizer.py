@@ -35,14 +35,14 @@ class KlinesDataNormalizer(SparkNormalizer):
 
         for interval in KLINES_INTERVAL:
             i_df = df.filter(col("interval") == interval)
-            self.save_data(i_df, interval)
+            self.save_data(i_df, "binance.klines." + interval)
 
-    def save_data(self, df: DataFrame, interval: str) -> None:
+    def save_data(self, df: DataFrame, collection: str) -> None:
         if df.isEmpty():
             return
 
         df.write.format("mongodb")\
-            .option("collection", "binance.klines_" + interval)\
+            .option("collection", collection)\
             .option("upsertDocument", False)\
             .mode("append")\
             .save()
@@ -59,14 +59,14 @@ class TickerInfoDataNormalizer(SparkNormalizer):
         df = df.withColumn("stats_open_time", to_timestamp(col("stats_open_time") / 1000))
         df = df.withColumn("stats_close_time", to_timestamp(col("stats_close_time") / 1000))
         df = df.select("symbol", "last_price", "stats_open_time", "stats_close_time")
-        self.save_data(df)
+        self.save_data(df, "binance.24h_ticker")
 
-    def save_data(self, df: DataFrame) -> None:
+    def save_data(self, df: DataFrame, collection: str) -> None:
         if df.isEmpty():
             return
 
         df.write.format("mongodb")\
-            .option("collection", "binance.24h_ticker")\
+            .option("collection", collection)\
             .option("upsertDocument", False)\
             .mode("append")\
             .save()
