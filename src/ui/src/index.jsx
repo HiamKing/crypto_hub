@@ -2,6 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from 'components/index';
 import Home from 'components/Home/index';
+import Binance from 'components/Binance/index';
+import CoinMarketCap from 'components/CoinMarketCap/index';
 import { routingPaths } from 'common/routers';
 import {
     Route,
@@ -15,8 +17,9 @@ const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path={routingPaths.home} element={<App />}>
             <Route path={routingPaths.home} element={<Home />} />
-            {/* <Route path={routingPaths.overview} element={<Overview />} />
-            <Route
+            <Route path={routingPaths.binance} element={<Binance />} />
+            <Route path={routingPaths.coinMarketCap} element={<CoinMarketCap />} />
+            {/* <Route
                 path={routingPaths.detailAlgorithm}
                 element={<DetailAlgorithm />}
             /> */}

@@ -1,9 +1,9 @@
 import { routingPaths } from 'common/routers';
-import './styles.scss';
 
-export default function Binance() {
+export default function CoinMarketCapNews() {
     return (
         <>
+            News
         </>
     );
 }

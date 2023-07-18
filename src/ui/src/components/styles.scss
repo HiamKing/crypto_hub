@@ -1,0 +1,35 @@
+ul.nav {
+    width: 40%;
+    margin: 0 auto 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 0px;
+    @media (max-width: 768px) {
+      width: 90%;
+    }
+}
+
+ul.nav li {
+    padding: 0.8rem;
+    list-style: none;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.5s;
+}
+
+ul.nav li:nth-child(2) {
+    border-radius: 0;
+}
+
+ul.nav li:hover {
+    color: #3861fb;
+    border-bottom-color: rgba(50, 224, 196, 0.15);
+}
+
+ul.nav li.active {
+    color: #3861fb;
+    border-bottom: 2px;
+    border-bottom-style: solid;
+    border-bottom-color: #3861fb;
+}
