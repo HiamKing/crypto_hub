@@ -1,6 +1,6 @@
 from typing import Dict, Any
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import to_timestamp, col, explode
+from pyspark.sql.functions import col, explode, to_timestamp
 from ..base_data_loader.normalizer import SparkNormalizer
 from .constants import FE_CMC_NEWS_KAFKA_TOPIC, FE_CMC_POSTS_KAFKA_TOPIC
 from .config import SPARK_APP_NAME, SPARK_CONFIG, SPARK_MASTER
@@ -17,8 +17,6 @@ class CMCDataNormalizer:
         }
 
     def normalize_data(self, topic: str, file_path: str) -> None:
-        if topic == FE_CMC_POSTS_KAFKA_TOPIC:
-            return
         self.normalizers[topic].normalize_data(file_path)
 
 
@@ -31,12 +29,13 @@ class NewsDataNormalizer(SparkNormalizer):
             .option("avroSchema", CMC_NEWS_SCHEMA)\
             .load(file_path)
 
-        assoc_df = df.select("assets", "meta.id")
-        assoc_df = assoc_df.withColumn("asset", explode(col("assets"))).drop("assets")
-        assoc_df = assoc_df.select(col("asset.name"), col("asset.coin_id"), col("id").alias("news_id"))
+        assoc_df = df.select(explode(col("assets")).alias("asset"), col("meta.id").alias("news_id"))
+        assoc_df = assoc_df.select(col("asset.name").alias("coin_name"), col("asset.coin_id"), col("news_id"))
         df = df.select("cover", "meta.*")
-        df = df.withColumn("_id", col("id"))
-        df = df.drop("id", "type", "visibility")
+        df = df.withColumnRenamed("id", "_id").drop("type", "visibility")
+        df = df.withColumn("created_at", to_timestamp(col("created_at")))
+        df = df.withColumn("updated_at", to_timestamp(col("updated_at")))
+        df = df.withColumn("released_at", to_timestamp(col("released_at")))
         self.save_data(assoc_df, "cmc.news_assoc")
         self.save_data(df, "cmc.news")
 
@@ -58,17 +57,21 @@ class PostsDataNormalizer(SparkNormalizer):
         df = self.spark.read.format("avro")\
             .option("avroSchema", CMC_POSTS_SCHEMA)\
             .load(file_path)
-        df = df.withColumn("stats_open_time", to_timestamp(col("stats_open_time") / 1000))
-        df = df.withColumn("stats_close_time", to_timestamp(col("stats_close_time") / 1000))
-        df = df.select("symbol", "last_price", "stats_open_time", "stats_close_time")
-        self.save_data(df)
+        assoc_df = df.select(
+            col("gravity_id").alias("post_id"), explode("currencies").alias("currency"))
+        assoc_df = assoc_df.select("post_id", "currency.*")
+        assoc_df = assoc_df.withColumnRenamed("id", "symbol_id").drop("slug")
+        df = df.withColumnRenamed("gravity_id", "_id")\
+            .drop("owner", "root_id", "type", "currencies")
+        df = df.withColumn("post_time", to_timestamp(col("post_time") / 1000))
+        self.save_data(assoc_df, "cmc.posts_assoc")
+        self.save_data(df, "cmc.posts")
 
-    def save_data(self, df: DataFrame) -> None:
+    def save_data(self, df: DataFrame, collection: str) -> None:
         if df.isEmpty():
             return
 
         df.write.format("mongodb")\
-            .option("collection", "24h_ticker_info")\
-            .option("upsertDocument", False)\
+            .option("collection", collection)\
             .mode("append")\
             .save()
