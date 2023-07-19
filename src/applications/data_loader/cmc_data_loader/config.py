@@ -16,4 +16,4 @@ SPARK_CONFIG = {
 }
 
 # Add Hadoop conf
-os.environ['HADOOP_CONF_DIR'] = f"{os.path.dirname(os.path.realpath(__file__))}/.." + '/hadoop_conf'
+os.environ['HADOOP_CONF_DIR'] = f"{os.path.dirname(os.path.realpath(__file__))}/../../utils/hadoop_conf"
