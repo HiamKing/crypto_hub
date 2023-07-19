@@ -26,3 +26,13 @@ ts_collections = [
 for collection in ts_collections:
     if collection["name"] not in created_collections:
         db.create_collection(collection["name"], timeseries=collection["timeseries"])
+
+# Create index
+
+indexs = [
+    {"collection": "cmc.posts", "fields": [("post_time", -1)]},
+    {"collection": "cmc.posts_assoc", "fields": [("symbol", 1)]}
+]
+
+for index in indexs:
+    db[index["collection"]].create_index(index["fields"])
