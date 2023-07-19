@@ -2,12 +2,12 @@ import os
 
 CONSUMER_KAFKA_CONFIG = {
     "bootstrap.servers": "localhost:19092,localhost:29092,localhost:39092",
-    "group.id": "binance_data_loader",
+    "group.id": "cmc_data_loader",
     "auto.offset.reset": "earliest",
     "enable.auto.commit": False
 }
 
-SPARK_APP_NAME = "binance_data_loader"
+SPARK_APP_NAME = "cmc_data_streamer"
 SPARK_MASTER = "local[*]"
 SPARK_CONFIG = {
     "spark.jars.packages": "org.apache.spark:spark-avro_2.12:3.4.1,org.mongodb.spark:mongo-spark-connector_2.12:10.2.0",
