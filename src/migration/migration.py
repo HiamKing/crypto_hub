@@ -9,7 +9,8 @@ created_collections = db.list_collection_names()
 # Create normal collections
 n_collections = [
     "cmc.checkpoints", "cmc.news", "cmc.posts", "cmc.news_assoc",
-    "cmc.posts_assoc", "cmc.stream.posts", "cmc.stream.posts_assoc"]
+    "cmc.posts_assoc", "cmc.stream.posts", "cmc.stream.posts_assoc",
+    "cmc.stream.news", "cmc.stream.news_assoc"]
 
 for collection in n_collections:
     if collection not in created_collections:
@@ -36,7 +37,12 @@ indexs = [
     {"collection": "cmc.posts_assoc", "fields": [("symbol", 1)], "kwargs": {}},
     {"collection": "cmc.stream.posts", "fields": [("post_time", -1)], "kwargs": {"expireAfterSeconds": 86400}},
     {"collection": "cmc.stream.posts_assoc", "fields": [("symbol", 1)], "kwargs": {}},
-    {"collection": "cmc.stream.posts_assoc", "fields": [("post_time", -1)], "kwargs": {"expireAfterSeconds": 86400}}
+    {"collection": "cmc.stream.posts_assoc", "fields": [("post_time", -1)], "kwargs": {"expireAfterSeconds": 86400}},
+    {"collection": "cmc.news", "fields": [("updated_at", -1)], "kwargs": {}},
+    {"collection": "cmc.news_assoc", "fields": [("coin_name", 1)], "kwargs": {}},
+    {"collection": "cmc.stream.news", "fields": [("updated_at", -1)], "kwargs": {"expireAfterSeconds": 86400}},
+    {"collection": "cmc.stream.news_assoc", "fields": [("coin_name", 1)], "kwargs": {}},
+    {"collection": "cmc.stream.news_assoc", "fields": [("updated_at", -1)], "kwargs": {"expireAfterSeconds": 86400}}
 ]
 
 for index in indexs:
