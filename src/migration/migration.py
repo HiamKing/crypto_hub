@@ -7,7 +7,9 @@ db = c["crypto_hub"]
 created_collections = db.list_collection_names()
 
 # Create normal collections
-n_collections = ["cmc.checkpoints", "cmc.news", "cmc.posts", "cmc.news_assoc", "cmc.posts_assoc"]
+n_collections = [
+    "cmc.checkpoints", "cmc.news", "cmc.posts", "cmc.news_assoc",
+    "cmc.posts_assoc", "cmc.stream.posts", "cmc.stream.posts_assoc"]
 
 for collection in n_collections:
     if collection not in created_collections:
@@ -30,9 +32,12 @@ for collection in ts_collections:
 # Create index
 
 indexs = [
-    {"collection": "cmc.posts", "fields": [("post_time", -1)]},
-    {"collection": "cmc.posts_assoc", "fields": [("symbol", 1)]}
+    {"collection": "cmc.posts", "fields": [("post_time", -1)], "kwargs": {}},
+    {"collection": "cmc.posts_assoc", "fields": [("symbol", 1)], "kwargs": {}},
+    {"collection": "cmc.stream.posts", "fields": [("post_time", -1)], "kwargs": {"expireAfterSeconds": 86400}},
+    {"collection": "cmc.stream.posts_assoc", "fields": [("symbol", 1)], "kwargs": {}},
+    {"collection": "cmc.stream.posts_assoc", "fields": [("post_time", -1)], "kwargs": {"expireAfterSeconds": 86400}}
 ]
 
 for index in indexs:
-    db[index["collection"]].create_index(index["fields"])
+    db[index["collection"]].create_index(index["fields"], **index["kwargs"])
