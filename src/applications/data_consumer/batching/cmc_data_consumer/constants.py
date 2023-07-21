@@ -8,7 +8,7 @@ FE_TOPIC_MAPPING = {
     CMC_NEWS_KAFKA_TOPIC: FE_CMC_NEWS_KAFKA_TOPIC,
 }
 
-MAX_FILE_SIZE = 10485760  # 10 mb
+MAX_FILE_SIZE = 5242880  # 5 mb
 
 NEWS_FIELDS_MAPPING = {
     "slug": {"name": "slug", "type": "string"},
