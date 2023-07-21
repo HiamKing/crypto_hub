@@ -4,7 +4,7 @@ DEFAULT_SEARCH_SIZE = 30
 
 
 class SearchSchema(Schema):
-    filters = fields.List(fields.List(fields.Raw()), missing=[])
+    filters = fields.Dict(keys=fields.String(), values=fields.Raw(), missing=[])
     limit = fields.Integer(missing=DEFAULT_SEARCH_SIZE)
     offset = fields.Integer(missing=0)
     with_count = fields.Boolean(missing=False)
