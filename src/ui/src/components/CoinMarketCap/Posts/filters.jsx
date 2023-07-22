@@ -1,6 +1,22 @@
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
-export default function PostFilters({filters, setFilters}) {
+export default function PostFilters({ filters, setFilters }) {
+    const updateSymbol = (event) => {
+        const newFilters = {
+            ...filters["filters"],
+            text_content: event.target.value,
+        };
+
+        if (newFilters["text_content"] === "") {
+            delete newFilters["text_content"]
+        }
+
+        setFilters({
+            ...filters,
+            filters: newFilters,
+        });
+    };
+
     return (
         <>
             <div className="filter-list">
@@ -12,6 +28,7 @@ export default function PostFilters({filters, setFilters}) {
                             class="form-control"
                             id="symbolInput"
                             placeholder="Enter symbol"
+                            onChange={updateSymbol}
                         />
                     </div>
                     <div class="form-group">

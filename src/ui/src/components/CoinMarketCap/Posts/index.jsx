@@ -40,7 +40,6 @@ export default function CoinMarketCapPosts() {
     });
 
     useEffect(() => {
-        console.log(filters);
         setIsLoading(true);
         APIS.cmc
             .search_posts(filters)
@@ -57,7 +56,7 @@ export default function CoinMarketCapPosts() {
 
     return (
         <>
-            <PostFilters />
+            <PostFilters filters={filters} setFilters={setFilters} />
             <Box sx={{ height: "100%", width: "75%" }}>
                 <DataGrid
                     slots={{
