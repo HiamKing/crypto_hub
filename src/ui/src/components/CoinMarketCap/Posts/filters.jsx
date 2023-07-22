@@ -1,6 +1,6 @@
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
-export default function PostFilters() {
+export default function PostFilters({filters, setFilters}) {
     return (
         <>
             <div className="filter-list">

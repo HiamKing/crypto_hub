@@ -18,7 +18,7 @@ function TruncateText({ text }) {
     const toggleReadMore = () => {
         setIsReadMore(!isReadMore);
     };
-    console.log(text.length)
+
     return (
         <div className="post-attribute content">
             {isReadMore

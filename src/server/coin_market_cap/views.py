@@ -34,7 +34,7 @@ def search_post(filters, limit, offset, with_count, sort_by):
         offset = offset - stream_posts_count
 
     if limit > 0:
-        models.extend(crypto_hub_db[CMC_STREAM_POSTS_COLLECTION].find(filters)
+        models.extend(crypto_hub_db[CMC_POSTS_COLLECTION].find(filters)
                       .sort([("post_time", -1)])
                       .limit(limit).skip(offset))
 
