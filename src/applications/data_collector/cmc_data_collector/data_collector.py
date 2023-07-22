@@ -1,5 +1,4 @@
 import os
-from datetime import datetime, timedelta
 from pymongo import MongoClient
 import requests
 import json
@@ -40,7 +39,7 @@ class CMCNewsDataCollector(DataCollector):
         params = {
             "coins": SYMBOL_ID_MAPPING[self.symbol],
             "page": "1",
-            "size": 10
+            "size": 20
         }
         res = requests.get(self.base_url, params=params).json()
         cmc_news = res["data"]
@@ -102,7 +101,6 @@ class CMCPostsDataCollector(DataCollector):
     def collect_data(self) -> None:
         payload = {
             "cryptoId": SYMBOL_ID_MAPPING[self.symbol],
-            "lastScore": int((datetime.now() - timedelta(hours=1)).timestamp() * 1000),
             "overView": False,
             "type": "ALL"
         }
