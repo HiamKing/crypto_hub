@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import PostFilters from "./filters";
-import PostList from "./list";
-
+import { postColsRenderers } from "./renderers";
+import Box from "@mui/material/Box";
+import { DataGrid } from "@mui/x-data-grid";
 import APIS from "services/apis";
 
 export default function CoinMarketCapPosts() {
@@ -19,7 +20,8 @@ export default function CoinMarketCapPosts() {
             .search_posts(filters)
             .then((res) => {
                 const data = res.data;
-                console.log(data);
+                console.log(data)
+                setPosts(data["models"]);
             })
             .catch((e) => {
                 console.log(`Error ${e}`);
@@ -29,7 +31,17 @@ export default function CoinMarketCapPosts() {
     return (
         <>
             <PostFilters />
-            <PostList />
+            <Box sx={{ height: "100%", width: "75%" }}>
+                <DataGrid
+                    slots={{
+                        columnHeaders: () => null,
+                    }}
+                    getRowHeight={() => 'auto'}
+                    getRowId={(row) => row._id}
+                    columns={postColsRenderers}
+                    rows={posts}
+                />
+            </Box>
         </>
     );
 }

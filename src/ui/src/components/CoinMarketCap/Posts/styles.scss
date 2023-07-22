@@ -1,0 +1,28 @@
+.post-attributes {
+    display: flex;
+    align-items: center;
+}
+
+.post-attribute.content {
+    display: block;
+    margin: 1rem 0 0 1rem;
+    color: #000;
+    align-items: center;
+}
+
+.read-or-hide {
+    color: #3861fb;
+}
+
+.read-or-hide:hover {
+    color: blue;
+    cursor: pointer;
+}
+
+.post-attribute {
+    margin: 1rem;
+    display: flex;
+    color: #808a9d;
+    justify-content: space-between;
+    align-items: center;
+}
