@@ -21,11 +21,8 @@ function TruncateText({ text }) {
 
     return (
         <div className="post-attribute content">
-            {isReadMore
-                ? text
-                : text.substring(0, MAX_LENGTH)}
-            {(text.length > MAX_LENGTH) &&
-            (
+            {isReadMore ? text : text.substring(0, MAX_LENGTH)}
+            {text.length > MAX_LENGTH && (
                 <span onClick={toggleReadMore} className="read-or-hide">
                     {!isReadMore ? "... Read more" : " Show less"}
                 </span>
@@ -44,8 +41,8 @@ const postColsRenderers = [
                 <div>
                     <TruncateText text={row["row"]["text_content"]} />
                     <div className="post-attributes">
-                        <div className="post-attribute">
-                            {row["row"]["bullish"] !== null ? (
+                        {row["row"]["bullish"] !== null ? (
+                            <div className="post-attribute">
                                 <Chip
                                     style={{
                                         backgroundColor: `${
@@ -65,8 +62,8 @@ const postColsRenderers = [
                                             : "▼ Bearish"
                                     }`}
                                 />
-                            ) : null}
-                        </div>
+                            </div>
+                        ) : null}
                         <div className="post-attribute">
                             <AddReactionOutlinedIcon />
                             <span className="text-center ml-2">

@@ -1,7 +1,7 @@
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 
 export default function PostFilters({ filters, setFilters }) {
-    const updateSymbol = (event) => {
+    const updateKeyword = (event) => {
         const newFilters = {
             ...filters["filters"],
             text_content: event.target.value,
@@ -22,13 +22,13 @@ export default function PostFilters({ filters, setFilters }) {
             <div className="filter-list">
                 <form>
                     <div class="form-group">
-                        <label for="exampleInputEmail1">Symbol</label>
+                        <label for="keywordInput">Keyword</label>
                         <input
                             type="text"
                             class="form-control"
-                            id="symbolInput"
-                            placeholder="Enter symbol"
-                            onChange={updateSymbol}
+                            id="keywordInput"
+                            placeholder="Enter keyword"
+                            onChange={updateKeyword}
                         />
                     </div>
                     <div class="form-group">

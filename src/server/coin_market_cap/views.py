@@ -16,7 +16,8 @@ cmc_bp = Blueprint("cmc_bp", __name__)
 def search_post(filters, limit, offset, with_count, sort_by):
     response = {}
     if "text_content" in filters:
-        filters["text_content"] = {"$regex": f"\${filters['text_content']}"}
+        filters["text_content"] = filters["text_content"].replace("$", "\$")
+        filters["text_content"] = {"$regex": f"{filters['text_content']}"}
     stream_filters = copy.deepcopy(filters)
     models = []
     latest_batch_post = list(crypto_hub_db[CMC_POSTS_COLLECTION].find(filters).sort([("post_time", -1)]).limit(1))
