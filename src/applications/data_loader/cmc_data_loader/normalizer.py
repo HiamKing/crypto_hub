@@ -36,6 +36,7 @@ class NewsDataNormalizer(SparkNormalizer):
         df = df.withColumn("created_at", to_timestamp(col("created_at")))
         df = df.withColumn("updated_at", to_timestamp(col("updated_at")))
         df = df.withColumn("released_at", to_timestamp(col("released_at")))
+        assoc_df = assoc_df.distinct()
         self.save_data(assoc_df, "cmc.news_assoc")
         self.save_data(df, "cmc.news")
 
@@ -64,6 +65,7 @@ class PostsDataNormalizer(SparkNormalizer):
         df = df.withColumnRenamed("gravity_id", "_id")\
             .drop("owner", "root_id", "type", "currencies")
         df = df.withColumn("post_time", to_timestamp(col("post_time") / 1000))
+        assoc_df = assoc_df.distinct()
         self.save_data(assoc_df, "cmc.posts_assoc")
         self.save_data(df, "cmc.posts")
 

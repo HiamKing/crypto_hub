@@ -40,6 +40,7 @@ class PostsNormalizer(DataNormalizer):
                   "status")
         n_df = n_df.withColumn("post_time", to_timestamp(col("post_time") / 1000))
         assoc_df = assoc_df.withColumn("post_time", to_timestamp(col("post_time") / 1000))
+        assoc_df = assoc_df.distinct()
         self.save_data(assoc_df, "cmc.stream.posts_assoc")
         self.save_data(n_df, "cmc.stream.posts")
 
@@ -79,6 +80,7 @@ class NewsNormalizer(DataNormalizer):
         n_df = n_df.withColumn("updated_at", to_timestamp(col("updated_at")))
         n_df = n_df.withColumn("released_at", to_timestamp(col("released_at")))
         n_df = n_df.drop("downvotes", "upvotes", "content")
+        assoc_df = assoc_df.distinct()
         self.save_data(assoc_df, "cmc.stream.news_assoc")
         self.save_data(n_df, "cmc.stream.news")
 
