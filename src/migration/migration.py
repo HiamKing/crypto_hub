@@ -35,14 +35,16 @@ for collection in ts_collections:
 indexs = [
     {"collection": "cmc.posts", "fields": [("post_time", -1)], "kwargs": {}},
     {"collection": "cmc.posts_assoc", "fields": [("symbol", 1)], "kwargs": {}},
-    {"collection": "cmc.stream.posts", "fields": [("post_time", -1)], "kwargs": {"expireAfterSeconds": 86400}},
+    {"collection": "cmc.posts_assoc", "fields": [("post_time", -1)], "kwargs": {}},
+    {"collection": "cmc.stream.posts", "fields": [("post_time", -1)], "kwargs": {"expireAfterSeconds": 604800}},
     {"collection": "cmc.stream.posts_assoc", "fields": [("symbol", 1)], "kwargs": {}},
-    {"collection": "cmc.stream.posts_assoc", "fields": [("post_time", -1)], "kwargs": {"expireAfterSeconds": 86400}},
+    {"collection": "cmc.stream.posts_assoc", "fields": [("post_time", -1)], "kwargs": {"expireAfterSeconds": 604800}},
     {"collection": "cmc.news", "fields": [("updated_at", -1)], "kwargs": {}},
     {"collection": "cmc.news_assoc", "fields": [("coin_name", 1)], "kwargs": {}},
-    {"collection": "cmc.stream.news", "fields": [("updated_at", -1)], "kwargs": {"expireAfterSeconds": 86400}},
+    {"collection": "cmc.news_assoc", "fields": [("updated_at", -1)], "kwargs": {}},
+    {"collection": "cmc.stream.news", "fields": [("updated_at", -1)], "kwargs": {"expireAfterSeconds": 604800}},
     {"collection": "cmc.stream.news_assoc", "fields": [("coin_name", 1)], "kwargs": {}},
-    {"collection": "cmc.stream.news_assoc", "fields": [("updated_at", -1)], "kwargs": {"expireAfterSeconds": 86400}}
+    {"collection": "cmc.stream.news_assoc", "fields": [("updated_at", -1)], "kwargs": {"expireAfterSeconds": 604800}}
 ]
 
 for index in indexs:
