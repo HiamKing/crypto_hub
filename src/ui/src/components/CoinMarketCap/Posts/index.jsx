@@ -57,7 +57,7 @@ export default function CoinMarketCapPosts() {
     return (
         <>
             <PostFilters filters={filters} setFilters={setFilters} />
-            <Box sx={{ height: "100%", width: "75%" }}>
+            <Box sx={{ height: "100%", width: "73%" }}>
                 <DataGrid
                     slots={{
                         columnHeaders: () => null,

@@ -116,7 +116,7 @@ CMC_POSTS_SCHEMA = json.dumps({
             "type": "record",
             "name": "PostOwner",
             "fields": [
-                {"name": "nickname", "type": "string"},
+                {"name": "nickname", "type": ["string", "null"]},
                 {"name": "handle", "type": ["string", "null"]},
                 {"name": "avatar_id", "type": "string"},
                 {"name": "created_time", "type": "long"},

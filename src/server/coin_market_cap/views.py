@@ -1,6 +1,7 @@
 import copy
 from flask import Blueprint
 from flask_apispec import use_kwargs, marshal_with
+from datetime import datetime
 
 from .schemas import SearchPostsResponseSchema
 from .constants import CMC_POSTS_COLLECTION, CMC_STREAM_POSTS_COLLECTION
@@ -15,6 +16,9 @@ cmc_bp = Blueprint("cmc_bp", __name__)
 @marshal_with(SearchPostsResponseSchema)
 def search_post(filters, limit, offset, with_count, sort_by):
     response = {}
+    if "post_time" in filters:
+        for key, val in filters["post_time"].items():
+            filters["post_time"][key] = datetime.fromisoformat(val.replace("Z", ""))
     if "text_content" in filters:
         filters["text_content"] = filters["text_content"].replace("$", "\$")
         filters["text_content"] = {"$regex": f"{filters['text_content']}"}
