@@ -39,7 +39,7 @@ const newsColsRenderers = [
         width: 838,
         renderCell: (row) => {
             return (
-                <div>
+                <div className="w-100">
                     <div className="news-attribute">
                         <Tooltip
                             title={Dayjs(row["row"]["updated_at"])
@@ -60,49 +60,6 @@ const newsColsRenderers = [
                             alt="Image"
                         />
                     </a>
-                    {/* <div className="news-attributes">
-                        {row["row"]["bullish"] !== null ? (
-                            <div className="news-attribute">
-                                <Chip
-                                    style={{
-                                        backgroundColor: `${
-                                            row["row"]["bullish"] == true
-                                                ? "#16c784"
-                                                : "#ea3943"
-                                        }`,
-                                        color: "#fff",
-                                        fontSize: "0.7rem",
-                                        fontWeight: "Bold",
-                                        borderRadius: "8px",
-                                        height: "1.4rem",
-                                    }}
-                                    label={`${
-                                        row["row"]["bullish"] == true
-                                            ? "▲ Bullish"
-                                            : "▼ Bearish"
-                                    }`}
-                                />
-                            </div>
-                        ) : null}
-                        <div className="news-attribute">
-                            <AddReactionOutlinedIcon />
-                            <span className="text-center ml-2">
-                                {row["row"]["like_count"]}
-                            </span>
-                        </div>
-                        <div className="news-attribute">
-                            <TextsmsOutlinedIcon />
-                            <span className="text-center ml-2">
-                                {row["row"]["comment_count"]}
-                            </span>
-                        </div>
-                        <div className="news-attribute">
-                            <AutorenewOutlinedIcon />
-                            <span className="text-center ml-2">
-                                {row["row"]["renews_count"]}
-                            </span>
-                        </div>
-                    </div> */}
                 </div>
             );
         },

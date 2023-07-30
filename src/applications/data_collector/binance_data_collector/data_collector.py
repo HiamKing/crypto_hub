@@ -30,8 +30,10 @@ class BinanceDataCollector(DataCollector):
 
         if json_result["e"] == TICKER_INFO_EVENT_TYPE:
             self.producer.produce(TICKER_INFO_KAFKA_TOPIC, json.dumps(json_result))
+            self.producer.poll(0)
         if json_result["e"] == KLINES_EVENT_TYPE:
             self.producer.produce(KLINES_KAFKA_TOPIC, json.dumps(json_result))
+            self.producer.poll(0)
         # Update metrics here...................................
 
     def collect_data(self) -> None:
@@ -51,4 +53,5 @@ class BinanceDataCollector(DataCollector):
 
     def stop(self) -> None:
         self.logger.info("Stop collecting Binance data")
+        self.producer.flush()
         self.binance_client.stop_manager_with_all_streams()

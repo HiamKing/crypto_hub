@@ -30,6 +30,20 @@ for collection in ts_collections:
     if collection["name"] not in created_collections:
         db.create_collection(collection["name"], timeseries=collection["timeseries"])
 
+# Create time series collections with expired time
+expired_ts_collections = [
+    {"name": "binance.stream.klines.1h", "timeseries": {"timeField": "start_time", "metaField": "symbol", "granularity": "hours"}, "expireAfterSeconds": 86400},
+    {"name": "binance.stream.klines.1m", "timeseries": {"timeField": "start_time", "metaField": "symbol", "granularity": "minutes"}, "expireAfterSeconds": 86400},
+    {"name": "binance.stream.klines.1d", "timeseries": {"timeField": "start_time", "metaField": "symbol", "granularity": "hours"}, "expireAfterSeconds": 86400},
+    {"name": "binance.stream.klines.1w", "timeseries": {"timeField": "start_time", "metaField": "symbol", "granularity": "hours"}, "expireAfterSeconds": 86400},
+    {"name": "binance.stream.klines.1M", "timeseries": {"timeField": "start_time", "metaField": "symbol", "granularity": "hours"}, "expireAfterSeconds": 86400},
+    {"name": "binance.stream.24h_ticker", "timeseries": {"timeField": "stats_close_time", "metaField": "symbol", "granularity": "seconds"}, "expireAfterSeconds": 86400},
+]
+
+for collection in expired_ts_collections:
+    if collection["name"] not in created_collections:
+        db.create_collection(collection["name"], timeseries=collection["timeseries"], expireAfterSeconds=collection["expireAfterSeconds"])
+
 # Create index
 
 indexs = [

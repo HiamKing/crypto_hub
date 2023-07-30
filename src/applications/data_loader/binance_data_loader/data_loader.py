@@ -30,7 +30,7 @@ class BinanceDataLoader(DataLoader):
 
             hdfs_file = msg.value().decode("utf-8")
             self.normalizer.normalize_data(msg.topic(), hdfs_file)
-            # self.consumer.commit(msg)
+            self.consumer.commit(msg)
 
     def start(self) -> None:
         self.logger.info("Starting Binance data loader...")
