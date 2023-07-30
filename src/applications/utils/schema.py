@@ -68,7 +68,7 @@ CMC_NEWS_SCHEMA = json.dumps({
     "type": "record",
     "name": "CMCNews",
     "fields": [
-        {"name": "slug", "type": "string"},
+        {"name": "slug", "type": ["string", "null"]},
         {"name": "cover", "type": "string"},
         {"name": "assets", "type": {
             "type": "array",
@@ -90,7 +90,7 @@ CMC_NEWS_SCHEMA = json.dumps({
                 {"name": "title", "type": "string"},
                 {"name": "subtitle", "type": "string"},
                 {"name": "source_name", "type": "string"},
-                {"name": "max_char", "type": "int"},
+                {"name": "max_char", "type": ["int", "null"]},
                 {"name": "language", "type": "string"},
                 {"name": "status", "type": "string"},
                 {"name": "type", "type": "string"},
@@ -117,7 +117,7 @@ CMC_POSTS_SCHEMA = json.dumps({
             "name": "PostOwner",
             "fields": [
                 {"name": "nickname", "type": "string"},
-                {"name": "handle", "type": "string"},
+                {"name": "handle", "type": ["string", "null"]},
                 {"name": "avatar_id", "type": "string"},
                 {"name": "created_time", "type": "long"},
                 {"name": "type", "type": "int"},
@@ -151,11 +151,11 @@ CMC_POSTS_SCHEMA = json.dumps({
         }},
         {"name": "post_time", "type": "long"},
         {"name": "type", "type": "int"},
-        {"name": "topics", "type": {
+        {"name": "topics", "type": [{
             "type": "array",
             "items": "string"
-        }},
-        {"name": "currencies", "type": {
+        }, "null"]},
+        {"name": "currencies", "type": [{
             "type": "array",
             "items": {
                 "type": "record",
@@ -166,9 +166,9 @@ CMC_POSTS_SCHEMA = json.dumps({
                     {"name": "slug", "type": "string"}
                 ]
             }
-        }},
+        }, "null"]},
         {"name": "bullish", "type": ["boolean", "null"]},
         {"name": "repost_count", "type": "int"},
-        {"name": "language_code", "type": "string"}
+        {"name": "language_code", "type": ["string", "null"]}
     ]
 })

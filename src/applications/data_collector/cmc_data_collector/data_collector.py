@@ -47,6 +47,8 @@ class CMCNewsDataCollector(DataCollector):
         for news in cmc_news:
             if news["meta"]["id"] == self.last_news_id:
                 break
+            if "updatedAt" not in news["meta"]:
+                continue
 
             self.producer.produce(CMC_NEWS_KAFKA_TOPIC, json.dumps(news))
             if not first_news_id:

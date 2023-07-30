@@ -78,6 +78,8 @@ class ReLabelAvroHDFSWriter(AvroHDFSWriter):
                 new_record[self.fields_mapping[key]["name"]] = float(val)
             elif self.fields_mapping[key]["type"] == "boolean":
                 new_record[self.fields_mapping[key]["name"]] = bool(val)
+            elif self.fields_mapping[key]["type"] == "string":
+                new_record[self.fields_mapping[key]["name"]] = str(val)
             else:
                 new_record[self.fields_mapping[key]["name"]] = val
 

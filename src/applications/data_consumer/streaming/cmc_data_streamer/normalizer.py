@@ -28,6 +28,8 @@ class PostsNormalizer(DataNormalizer):
         n_df = self.spark.read.json(n_df.rdd.map(lambda r: r[0]))
 
         n_df = self.rename_snake_case_cols(n_df)
+        if "currencies" not in n_df.columns:
+            return
         assoc_df = n_df.select(
             col("gravity_id").alias("post_id"), explode("currencies").alias("currency"), col("post_time"))
         assoc_df = assoc_df.select("post_id", "currency.*", "post_time")
