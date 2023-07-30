@@ -1,4 +1,3 @@
-import { useState } from "react";
 import relativeTime from "dayjs/plugin/relativeTime";
 import Dayjs from "dayjs";
 import Chip from "@mui/material/Chip";
@@ -11,27 +10,29 @@ import utc from "dayjs/plugin/utc";
 Dayjs.extend(utc);
 Dayjs.extend(relativeTime);
 
-function TruncateText({ text }) {
-    const [isReadMore, setIsReadMore] = useState(false);
+function Newscontent({ row }) {
     const MAX_LENGTH = 100;
 
-    const toggleReadMore = () => {
-        setIsReadMore(!isReadMore);
-    };
-
     return (
-        <div className="post-attribute content">
-            {isReadMore ? text : text.substring(0, MAX_LENGTH)}
-            {text.length > MAX_LENGTH && (
-                <span onClick={toggleReadMore} className="read-or-hide">
-                    {!isReadMore ? "... Read more" : " Show less"}
-                </span>
-            )}
+        <div className="news-attribute content w-75">
+            <div className="title">
+            {row["title"].length <= MAX_LENGTH
+                ? row["title"]
+                : row["title"].substring(0, MAX_LENGTH) + "..."}
+            </div>
+            <div className="subtitle">
+            {row["subtitle"].length <= MAX_LENGTH
+                ? row["subtitle"]
+                : row["subtitle"].substring(0, MAX_LENGTH) + "..."}
+            </div>
+            <div className="source-name">
+                {row["source_name"]}
+            </div>
         </div>
     );
 }
 
-const postColsRenderers = [
+const newsColsRenderers = [
     {
         field: "data",
         headerName: "Data",
@@ -39,10 +40,29 @@ const postColsRenderers = [
         renderCell: (row) => {
             return (
                 <div>
-                    <TruncateText text={row["row"]["text_content"]} />
-                    <div className="post-attributes">
+                    <div className="news-attribute">
+                        <Tooltip
+                            title={Dayjs(row["row"]["updated_at"])
+                                .utc(true)
+                                .toString()}
+                            arrow
+                        >
+                            {Dayjs(row["row"]["updated_at"])
+                                .utc(true)
+                                .fromNow()}
+                        </Tooltip>
+                    </div>
+                    <a className="news-attributes link" href={row["row"]["source_url"]} target="_blank">
+                        <Newscontent row={row["row"]} />
+                        <img
+                            className="news-attribute cover"
+                            src={row["row"]["cover"]}
+                            alt="Image"
+                        />
+                    </a>
+                    {/* <div className="news-attributes">
                         {row["row"]["bullish"] !== null ? (
-                            <div className="post-attribute">
+                            <div className="news-attribute">
                                 <Chip
                                     style={{
                                         backgroundColor: `${
@@ -64,41 +84,29 @@ const postColsRenderers = [
                                 />
                             </div>
                         ) : null}
-                        <div className="post-attribute">
+                        <div className="news-attribute">
                             <AddReactionOutlinedIcon />
                             <span className="text-center ml-2">
                                 {row["row"]["like_count"]}
                             </span>
                         </div>
-                        <div className="post-attribute">
+                        <div className="news-attribute">
                             <TextsmsOutlinedIcon />
                             <span className="text-center ml-2">
                                 {row["row"]["comment_count"]}
                             </span>
                         </div>
-                        <div className="post-attribute">
+                        <div className="news-attribute">
                             <AutorenewOutlinedIcon />
                             <span className="text-center ml-2">
-                                {row["row"]["repost_count"]}
+                                {row["row"]["renews_count"]}
                             </span>
                         </div>
-                        <div className="post-attribute">
-                            <Tooltip
-                                title={Dayjs(row["row"]["post_time"])
-                                    .utc(true)
-                                    .toString()}
-                                arrow
-                            >
-                                {Dayjs(row["row"]["post_time"])
-                                    .utc(true)
-                                    .fromNow()}
-                            </Tooltip>
-                        </div>
-                    </div>
+                    </div> */}
                 </div>
             );
         },
     },
 ];
 
-export { postColsRenderers };
+export { newsColsRenderers };

@@ -6,6 +6,8 @@ const APIS = {
     cmc: {
         search_posts: (args) =>
             axios.post(`${API_ROOT}/coin-market-cap/search-posts`, args),
+        search_news: (args) =>
+            axios.post(`${API_ROOT}/coin-market-cap/search-news`, args),
     },
 };
 // getOverviewInfo: (args) =>
