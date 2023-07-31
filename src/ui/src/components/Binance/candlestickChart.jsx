@@ -55,14 +55,22 @@ const RealTimeCandlestickChart = ({ symbol }) => {
         },
         xaxis: {
             type: "datetime",
+            labels: {
+                datetimeUTC: false,
+                show: false,
+            },
         },
         yaxis: {
             tooltip: {
                 enabled: true,
             },
         },
-        zoom: {
-            enabled: true,
+        tooltip: {
+            x: {
+                formatter: function (val) {
+                    return dayjs(val).format("YYYY-MM-DD HH:mm"); // Format the x-axis tooltip with hour, minute, and seconds
+                },
+            },
         },
     };
 
@@ -73,6 +81,9 @@ const RealTimeCandlestickChart = ({ symbol }) => {
         },
         xaxis: {
             type: "datetime",
+            labels: {
+                datetimeUTC: false,
+            },
         },
         plotOptions: {
             bar: {
@@ -88,8 +99,11 @@ const RealTimeCandlestickChart = ({ symbol }) => {
         const klinesData = [];
         const volumeData = [];
         for (const element of data) {
-            const localTime = dayjs(element["start_time"]).utc(true).local().format('YYYY-MM-DDTHH:mm:ss');
-            console.log(localTime)
+            const localTime = dayjs(element["start_time"])
+                .utc(true)
+                .local()
+                .format("YYYY-MM-DDTHH:mm:ss");
+            console.log(localTime);
             klinesData.push({
                 x: localTime,
                 y: [
@@ -136,8 +150,7 @@ const RealTimeCandlestickChart = ({ symbol }) => {
                     options={candlestickOptions}
                     series={[{ data: candlestickData }]}
                     type="candlestick"
-                    he
-                    ight={300}
+                    height={300}
                 />
             )}
             {!_.isEmpty(volumeData) && (

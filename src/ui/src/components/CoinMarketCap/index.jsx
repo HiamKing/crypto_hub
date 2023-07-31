@@ -1,10 +1,14 @@
-import CoinMarketCapTabBar from './TabBar';
-import './styles.scss';
+import CoinMarketCapTabBar from "./TabBar";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import "./styles.scss";
 
 export default function CoinMarketCap() {
     return (
         <>
-            <CoinMarketCapTabBar />
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <CoinMarketCapTabBar />
+            </LocalizationProvider>
         </>
     );
 }
