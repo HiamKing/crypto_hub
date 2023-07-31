@@ -5,37 +5,37 @@ import APIS from "services/apis";
 import _ from "lodash";
 import "./styles.scss";
 
-const ButtonGroupComponent = ({ interval, setInterval }) => {
+const ButtonGroupComponent = ({ chartInterval, setChartInterval }) => {
     return (
         <div className="interval-group-btn">
             <span>Zoom</span>
             <span
-                className={`interval-btn ${interval === "1m" ? "active" : ""}`}
-                onClick={() => setInterval("1m")}
+                className={`interval-btn ${chartInterval === "1m" ? "active" : ""}`}
+                onClick={() => setChartInterval("1m")}
             >
                 1m
             </span>
             <span
-                className={`interval-btn ${interval === "1h" ? "active" : ""}`}
-                onClick={() => setInterval("1h")}
+                className={`interval-btn ${chartInterval === "1h" ? "active" : ""}`}
+                onClick={() => setChartInterval("1h")}
             >
                 1h
             </span>
             <span
-                className={`interval-btn ${interval === "1d" ? "active" : ""}`}
-                onClick={() => setInterval("1d")}
+                className={`interval-btn ${chartInterval === "1d" ? "active" : ""}`}
+                onClick={() => setChartInterval("1d")}
             >
                 1d
             </span>
             <span
-                className={`interval-btn ${interval === "1w" ? "active" : ""}`}
-                onClick={() => setInterval("1w")}
+                className={`interval-btn ${chartInterval === "1w" ? "active" : ""}`}
+                onClick={() => setChartInterval("1w")}
             >
                 1w
             </span>
             <span
-                className={`interval-btn ${interval === "1M" ? "active" : ""}`}
-                onClick={() => setInterval("1M")}
+                className={`interval-btn ${chartInterval === "1M" ? "active" : ""}`}
+                onClick={() => setChartInterval("1M")}
             >
                 1M
             </span>
@@ -44,7 +44,7 @@ const ButtonGroupComponent = ({ interval, setInterval }) => {
 };
 
 const RealTimeCandlestickChart = ({ symbol }) => {
-    const [interval, setInterval] = useState("1h");
+    const [chartInterval, setChartInterval] = useState("1m");
     const [candlestickData, setCandlestickData] = useState([]);
     const [volumeData, setVolumeData] = useState([]);
 
@@ -68,7 +68,7 @@ const RealTimeCandlestickChart = ({ symbol }) => {
         tooltip: {
             x: {
                 formatter: function (val) {
-                    return dayjs(val).format("YYYY-MM-DD HH:mm"); // Format the x-axis tooltip with hour, minute, and seconds
+                    return dayjs(val).format("YYYY-MM-DD HH:mm");
                 },
             },
         },
@@ -92,6 +92,13 @@ const RealTimeCandlestickChart = ({ symbol }) => {
         },
         dataLabels: {
             enabled: false,
+        },
+        tooltip: {
+            x: {
+                formatter: function (val) {
+                    return dayjs(val).format("YYYY-MM-DD HH:mm");
+                },
+            },
         },
     };
 
@@ -123,8 +130,12 @@ const RealTimeCandlestickChart = ({ symbol }) => {
     };
 
     const fetchRealTimeData = () => {
+        if (!symbol || !chartInterval) {
+            return
+        }
+
         APIS.binance
-            .get_symbol_klines(symbol, interval)
+            .get_symbol_klines(symbol, chartInterval)
             .then((res) => {
                 const data = res.data;
                 formatDataToChart(data["models"]);
@@ -136,14 +147,19 @@ const RealTimeCandlestickChart = ({ symbol }) => {
 
     useEffect(() => {
         fetchRealTimeData();
-    }, [symbol, interval]);
+
+        const intervalId = setInterval(fetchRealTimeData, 2000); // Fetch data every 5 seconds
+
+        // Clear interval on component unmount
+        return () => clearInterval(intervalId);
+    }, [symbol, chartInterval]);
 
     return (
         <div className="w-100">
             {symbol}
             <ButtonGroupComponent
-                interval={interval}
-                setInterval={setInterval}
+                chartInterval={chartInterval}
+                setChartInterval={setChartInterval}
             />
             {!_.isEmpty(candlestickData) && (
                 <ApexCharts

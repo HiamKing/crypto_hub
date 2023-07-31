@@ -68,10 +68,10 @@ export default function RealTimePriceTable(props) {
     useEffect(() => {
         fetchRealTimeData();
 
-        // const intervalId = setInterval(fetchRealTimeData, 5000); // Fetch data every 5 seconds
+        const intervalId = setInterval(fetchRealTimeData, 5000); // Fetch data every 5 seconds
 
-        // // Clear interval on component unmount
-        // return () => clearInterval(intervalId);
+        // Clear interval on component unmount
+        return () => clearInterval(intervalId);
     }, []);
 
     return (

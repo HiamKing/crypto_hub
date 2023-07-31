@@ -1,5 +1,4 @@
 import { useState } from "react";
-import relativeTime from "dayjs/plugin/relativeTime";
 import Dayjs from "dayjs";
 import Chip from "@mui/material/Chip";
 import AddReactionOutlinedIcon from "@mui/icons-material/AddReactionOutlined";
@@ -7,9 +6,7 @@ import TextsmsOutlinedIcon from "@mui/icons-material/TextsmsOutlined";
 import Tooltip from "@mui/material/Tooltip";
 import AutorenewOutlinedIcon from "@mui/icons-material/AutorenewOutlined";
 import "./styles.scss";
-import utc from "dayjs/plugin/utc";
-Dayjs.extend(utc);
-Dayjs.extend(relativeTime);
+
 
 function TruncateText({ text }) {
     const [isReadMore, setIsReadMore] = useState(false);
@@ -86,7 +83,8 @@ const postColsRenderers = [
                             <Tooltip
                                 title={Dayjs(row["row"]["post_time"])
                                     .utc(true)
-                                    .toString()}
+                                    .local()
+                                    .format("ddd, DD MMM YYYY HH:mm:ss")}
                                 arrow
                             >
                                 {Dayjs(row["row"]["post_time"])

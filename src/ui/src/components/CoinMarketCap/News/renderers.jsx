@@ -1,10 +1,6 @@
-import relativeTime from "dayjs/plugin/relativeTime";
 import Dayjs from "dayjs";
 import Tooltip from "@mui/material/Tooltip";
 import "./styles.scss";
-import utc from "dayjs/plugin/utc";
-Dayjs.extend(utc);
-Dayjs.extend(relativeTime);
 
 function Newscontent({ row }) {
     const MAX_LENGTH = 100;
@@ -12,18 +8,16 @@ function Newscontent({ row }) {
     return (
         <div className="news-attribute content w-75">
             <div className="title">
-            {row["title"].length <= MAX_LENGTH
-                ? row["title"]
-                : row["title"].substring(0, MAX_LENGTH) + "..."}
+                {row["title"].length <= MAX_LENGTH
+                    ? row["title"]
+                    : row["title"].substring(0, MAX_LENGTH) + "..."}
             </div>
             <div className="subtitle">
-            {row["subtitle"].length <= MAX_LENGTH
-                ? row["subtitle"]
-                : row["subtitle"].substring(0, MAX_LENGTH) + "..."}
+                {row["subtitle"].length <= MAX_LENGTH
+                    ? row["subtitle"]
+                    : row["subtitle"].substring(0, MAX_LENGTH) + "..."}
             </div>
-            <div className="source-name">
-                {row["source_name"]}
-            </div>
+            <div className="source-name">{row["source_name"]}</div>
         </div>
     );
 }
@@ -40,7 +34,8 @@ const newsColsRenderers = [
                         <Tooltip
                             title={Dayjs(row["row"]["updated_at"])
                                 .utc(true)
-                                .toString()}
+                                .local()
+                                .format("ddd, DD MMM YYYY HH:mm:ss")}
                             arrow
                         >
                             {Dayjs(row["row"]["updated_at"])
@@ -48,7 +43,12 @@ const newsColsRenderers = [
                                 .fromNow()}
                         </Tooltip>
                     </div>
-                    <a className="news-attributes link" href={row["row"]["source_url"]} target="_blank" rel="noreferrer">
+                    <a
+                        className="news-attributes link"
+                        href={row["row"]["source_url"]}
+                        target="_blank"
+                        rel="noreferrer"
+                    >
                         <Newscontent row={row["row"]} />
                         <img
                             className="news-attribute cover"

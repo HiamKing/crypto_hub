@@ -45,7 +45,7 @@ def get_price_change():
 @binance_bp.route("/klines/<symbol>/<interval>", methods=["GET"])
 @marshal_with(KlinesResponseSchema)
 def get_symbol_klines(symbol, interval):
-    limit = 199
+    limit = 99
     response = {}
     models = []
     query = {
@@ -74,9 +74,9 @@ def get_symbol_klines(symbol, interval):
         models.extend(batch_cursor.find(query, projection)
                       .sort([("start_time", -1)]).limit(limit))
 
-    query.pop("is_closed")
+    stream_query.pop("is_closed")
     models.reverse()
-    last_candle = stream_cursor.find_one(query, projection, sort=[("start_time", -1)])
+    last_candle = stream_cursor.find_one(stream_query, projection, sort=[("last_trade_id", -1)])
     models.append(last_candle)
     response["models"] = models
 
