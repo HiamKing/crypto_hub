@@ -3,6 +3,9 @@ import axios from "axios";
 const API_ROOT = process.env.REACT_APP_API_ROOT || "";
 
 const APIS = {
+    binance: {
+        get_price_change: () => axios.get(`${API_ROOT}/binance/price-change`),
+    },
     cmc: {
         search_posts: (args) =>
             axios.post(`${API_ROOT}/coin-market-cap/search-posts`, args),

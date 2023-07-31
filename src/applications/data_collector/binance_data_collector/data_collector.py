@@ -1,5 +1,6 @@
 import os
 import json
+import asyncio
 from unicorn_binance_websocket_api import BinanceWebSocketApiManager
 from confluent_kafka import Producer
 
@@ -36,17 +37,19 @@ class BinanceDataCollector(DataCollector):
             self.producer.poll(0)
         # Update metrics here...................................
 
-    def collect_data(self) -> None:
+    async def collect_data(self) -> None:
         self.binance_client.create_stream(
             channels=SUBCRIBE_CHANNELS,
             markets=SYMBOL_LIST,
             process_stream_data=self.message_handler
         )
+        while True:
+            await asyncio.sleep(1)
 
     def start(self) -> None:
         self.logger.info("Start collecting Binance data")
         try:
-            self.collect_data()
+            asyncio.run(self.collect_data())
         except Exception as e:
             self.logger.error(f"{e}")
             self.stop()
