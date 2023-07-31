@@ -12,7 +12,7 @@ export default function CoinMarketCap() {
             <Box className="mt-1" sx={{ height: "100%", width: "30%" }}>
                 <RealTimePriceTable setCurrentSymbol={setCurrentSymbol} />
             </Box>
-            <Box className="mt-1" sx={{ height: "100%", width: "70%" }}>
+            <Box className="" sx={{ height: "100%", width: "70%" }}>
                 <RealTimeCandlestickChart symbol={currentSymbol} />
             </Box>
         </div>

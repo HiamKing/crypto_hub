@@ -3,7 +3,8 @@ from flask import Blueprint
 from flask_apispec import marshal_with
 
 from .schemas import (
-    PriceChangeResponseSchema, KlinesResponseSchema
+    PriceChangeResponseSchema, KlinesResponseSchema,
+    Symbol24HStatsResponseSchema
 )
 from server.services.mongodb import crypto_hub_db
 
@@ -79,5 +80,33 @@ def get_symbol_klines(symbol, interval):
     last_candle = stream_cursor.find_one(stream_query, projection, sort=[("last_trade_id", -1)])
     models.append(last_candle)
     response["models"] = models
+
+    return response
+
+
+@binance_bp.route("/<symbol>/24h-stats", methods=["GET"])
+@marshal_with(Symbol24HStatsResponseSchema)
+def get_symbol_24h_stats(symbol):
+    response = None
+    query = {
+        "symbol": symbol,
+    }
+
+    projection = {
+        "last_price": 1, "price_change": 1,
+        "price_change_percent": 1, "high_price": 1,
+        "low_price": 1, "base_asset_vol": 1,
+        "quote_asset_vol": 1, "_id": 0
+    }
+    stream_cursor = crypto_hub_db["binance.stream.24h_ticker"]
+
+    docs = stream_cursor.find(query, projection).sort([("stats_close_time", -1)])
+
+    for doc in docs:
+        if not response:
+            response = doc
+        else:
+            response["last_price_state"] = "bullish" if response["last_price"] > doc["last_price"] else "bearish"
+            break
 
     return response

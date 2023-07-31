@@ -40,11 +40,13 @@
     display: flex;
     justify-content: center;
     width: 100%;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+    padding: 0.5rem 0 0.5rem 0;
     border-bottom: 1px;
     border-bottom-color: #E0E0E0;
     border-bottom-style: solid;
+    border-top: 1px;
+    border-top-color: #E0E0E0;
+    border-top-style: solid;
 }
 
 .interval-btn {
@@ -59,4 +61,71 @@
 
 .interval-btn.active {
     color: #3861fb;
+}
+
+.symbol-name {
+    font-size: large;
+    padding: 1rem 1rem 1rem 1rem;
+    border-right: 1px;
+    border-right-color: #E0E0E0;
+    border-right-style: solid;
+    width: 20%;
+    text-align: center;
+}
+
+.symbol-price {
+    width: 12%;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+}
+
+.symbol-stats-group {
+    display: flex;
+    overflow-x: auto;
+    width: 68%;
+
+    &::-webkit-scrollbar {
+        width: 2px;
+        height: 2px;
+    }
+
+    &::-webkit-scrollbar-track {
+        border-radius: 10px;
+        background: rgba(0,0,0,0.1);
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        background: rgba(0,0,0,0.2);
+    }
+
+    &::-webkit-scrollbar-thumb:hover{
+        background: rgba(0,0,0,0.4);
+    }
+
+    &::-webkit-scrollbar-thumb:active{
+        background: rgba(0,0,0,.9);
+    }
+}
+
+.symbol-stats.price {
+    padding-left: 1rem;
+}
+
+.symbol-stats.volume {
+    padding-left: 1rem;
+    min-width: 8.5rem;
+}
+
+.symbol-stats .label {
+    color: #808a9d;
+    font-size: 0.8rem;
+    padding-top: 0.2rem;
+}
+
+.symbol-stats .value {
+    font-size: 0.8rem;
+    white-space: nowrap;
 }
