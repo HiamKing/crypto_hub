@@ -1,8 +1,9 @@
+import copy
 from flask import Blueprint
 from flask_apispec import marshal_with
 
 from .schemas import (
-    PriceChangeResponseSchema
+    PriceChangeResponseSchema, KlinesResponseSchema
 )
 from server.services.mongodb import crypto_hub_db
 
@@ -38,4 +39,45 @@ def get_price_change():
 
     for doc in docs:
         response["models"].append(doc)
+    return response
+
+
+@binance_bp.route("/klines/<symbol>/<interval>", methods=["GET"])
+@marshal_with(KlinesResponseSchema)
+def get_symbol_klines(symbol, interval):
+    limit = 199
+    response = {}
+    models = []
+    query = {
+        "symbol": symbol,
+        "is_closed": True
+    }
+
+    projection = {
+        "start_time": 1, "open_price": 1,
+        "high_price": 1, "low_price": 1,
+        "close_price": 1, "base_asset_vol": 1,
+        "_id": 0
+    }
+    stream_query = copy.deepcopy(query)
+    stream_cursor = crypto_hub_db["binance.stream.klines." + interval]
+    batch_cursor = crypto_hub_db["binance.klines." + interval]
+
+    latest_batch_doc = batch_cursor.find_one(query, sort=[("start_time", -1)])
+    stream_query["start_time"] = {"$gt": latest_batch_doc["start_time"]}
+
+    models.extend(stream_cursor.find(stream_query, projection)
+                  .sort([("start_time", -1)]).limit(limit))
+
+    if len(models) < limit:
+        limit = limit - len(models)
+        models.extend(batch_cursor.find(query, projection)
+                      .sort([("start_time", -1)]).limit(limit))
+
+    query.pop("is_closed")
+    models.reverse()
+    last_candle = stream_cursor.find_one(query, projection, sort=[("start_time", -1)])
+    models.append(last_candle)
+    response["models"] = models
+
     return response

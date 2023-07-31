@@ -1,10 +1,6 @@
 import relativeTime from "dayjs/plugin/relativeTime";
 import Dayjs from "dayjs";
-import Chip from "@mui/material/Chip";
-import AddReactionOutlinedIcon from "@mui/icons-material/AddReactionOutlined";
-import TextsmsOutlinedIcon from "@mui/icons-material/TextsmsOutlined";
 import Tooltip from "@mui/material/Tooltip";
-import AutorenewOutlinedIcon from "@mui/icons-material/AutorenewOutlined";
 import "./styles.scss";
 import utc from "dayjs/plugin/utc";
 Dayjs.extend(utc);
@@ -52,12 +48,12 @@ const newsColsRenderers = [
                                 .fromNow()}
                         </Tooltip>
                     </div>
-                    <a className="news-attributes link" href={row["row"]["source_url"]} target="_blank">
+                    <a className="news-attributes link" href={row["row"]["source_url"]} target="_blank" rel="noreferrer">
                         <Newscontent row={row["row"]} />
                         <img
                             className="news-attribute cover"
                             src={row["row"]["cover"]}
-                            alt="Image"
+                            alt=""
                         />
                     </a>
                 </div>

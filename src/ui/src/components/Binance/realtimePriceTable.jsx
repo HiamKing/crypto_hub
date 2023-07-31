@@ -45,7 +45,7 @@ function PriceChangePercent({ priceChangePercent }) {
         </div>
     );
 }
-export default function RealTimePriceTable() {
+export default function RealTimePriceTable(props) {
     const [tableData, setTableData] = useState([]);
 
     // Function to fetch real-time data from API
@@ -68,10 +68,10 @@ export default function RealTimePriceTable() {
     useEffect(() => {
         fetchRealTimeData();
 
-        const intervalId = setInterval(fetchRealTimeData, 5000); // Fetch data every 5 seconds
+        // const intervalId = setInterval(fetchRealTimeData, 5000); // Fetch data every 5 seconds
 
-        // Clear interval on component unmount
-        return () => clearInterval(intervalId);
+        // // Clear interval on component unmount
+        // return () => clearInterval(intervalId);
     }, []);
 
     return (
@@ -89,6 +89,7 @@ export default function RealTimePriceTable() {
                         <TableRow
                             key={index}
                             className="realtime-price-table-row"
+                            onClick={() => props.setCurrentSymbol(row.symbol)}
                         >
                             <TableCell component="th" scope="row">
                                 <PairName symbol={row.symbol} />

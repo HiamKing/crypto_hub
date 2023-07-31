@@ -25,6 +25,7 @@
 .realtime-price-table-row:hover {
     height: 2rem;
     background-color: #f6f6f6;
+    cursor: pointer;
 }
 
 .bullish {
@@ -33,4 +34,29 @@
 
 .bearish {
     color: #ea3943;
+}
+
+.interval-group-btn {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px;
+    border-bottom-color: #E0E0E0;
+    border-bottom-style: solid;
+}
+
+.interval-btn {
+    color: #707a8a;
+    margin-left: 2rem;
+    cursor: pointer;
+}
+
+.interval-btn:hover {
+    color: #3861fb;
+}
+
+.interval-btn.active {
+    color: #3861fb;
 }

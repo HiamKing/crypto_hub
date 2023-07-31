@@ -5,6 +5,8 @@ const API_ROOT = process.env.REACT_APP_API_ROOT || "";
 const APIS = {
     binance: {
         get_price_change: () => axios.get(`${API_ROOT}/binance/price-change`),
+        get_symbol_klines: (symbol, interval) =>
+            axios.get(`${API_ROOT}/binance/klines/${symbol}/${interval}`),
     },
     cmc: {
         search_posts: (args) =>

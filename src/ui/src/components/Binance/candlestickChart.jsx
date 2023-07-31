@@ -1,54 +1,155 @@
-import React, { useState, useEffect } from 'react';
-import ApexCharts from 'react-apexcharts';
+import React, { useState, useEffect } from "react";
+import ApexCharts from "react-apexcharts";
+import dayjs from "dayjs";
+import APIS from "services/apis";
+import _ from "lodash";
+import "./styles.scss";
 
-const RealTimeCandlestickChart = () => {
-  const [data, setData] = useState([]);
-  const [volumeData, setVolumeData] = useState([]);
-  const [options, setOptions] = useState({
-    chart: {
-      type: 'candlestick',
-      height: 350,
-    },
-    xaxis: {
-      type: 'category',
-      labels: {
-        formatter: (val) => new Date(val).toLocaleTimeString(),
-      },
-    },
-    yaxis: {
-      tooltip: {
-        enabled: true,
-      },
-    },
-  });
+const ButtonGroupComponent = ({ interval, setInterval }) => {
+    return (
+        <div className="interval-group-btn">
+            <span>Zoom</span>
+            <span
+                className={`interval-btn ${interval === "1m" ? "active" : ""}`}
+                onClick={() => setInterval("1m")}
+            >
+                1m
+            </span>
+            <span
+                className={`interval-btn ${interval === "1h" ? "active" : ""}`}
+                onClick={() => setInterval("1h")}
+            >
+                1h
+            </span>
+            <span
+                className={`interval-btn ${interval === "1d" ? "active" : ""}`}
+                onClick={() => setInterval("1d")}
+            >
+                1d
+            </span>
+            <span
+                className={`interval-btn ${interval === "1w" ? "active" : ""}`}
+                onClick={() => setInterval("1w")}
+            >
+                1w
+            </span>
+            <span
+                className={`interval-btn ${interval === "1M" ? "active" : ""}`}
+                onClick={() => setInterval("1M")}
+            >
+                1M
+            </span>
+        </div>
+    );
+};
 
-//   useEffect(() => {
-//     const socket = io('wss://your-websocket-url'); // Replace with your actual WebSocket URL
+const RealTimeCandlestickChart = ({ symbol }) => {
+    const [interval, setInterval] = useState("1h");
+    const [candlestickData, setCandlestickData] = useState([]);
+    const [volumeData, setVolumeData] = useState([]);
 
-//     socket.on('connect', () => {
-//       console.log('Connected to WebSocket server');
-//     });
+    const candlestickOptions = {
+        chart: {
+            type: "candlestick",
+            height: 350,
+        },
+        xaxis: {
+            type: "datetime",
+        },
+        yaxis: {
+            tooltip: {
+                enabled: true,
+            },
+        },
+        zoom: {
+            enabled: true,
+        },
+    };
 
-//     socket.on('data', (newData) => {
-//       setData((prevData) => [...prevData, { x: new Date().getTime(), ...newData }]);
-//       setVolumeData((prevData) => [...prevData, { x: new Date().getTime(), y: newData.volume }]);
-//     });
+    const volumeOptions = {
+        chart: {
+            type: "bar",
+            height: 160,
+        },
+        xaxis: {
+            type: "datetime",
+        },
+        plotOptions: {
+            bar: {
+                columnWidth: "80%",
+            },
+        },
+        dataLabels: {
+            enabled: false,
+        },
+    };
 
-//     socket.on('disconnect', () => {
-//       console.log('Disconnected from WebSocket server');
-//     });
+    const formatDataToChart = (data) => {
+        const klinesData = [];
+        const volumeData = [];
+        for (const element of data) {
+            const localTime = dayjs(element["start_time"]).utc(true).local().format('YYYY-MM-DDTHH:mm:ss');
+            console.log(localTime)
+            klinesData.push({
+                x: localTime,
+                y: [
+                    element["open_price"],
+                    element["high_price"],
+                    element["low_price"],
+                    element["close_price"],
+                ],
+            });
+            volumeData.push({
+                x: localTime,
+                y: element["base_asset_vol"],
+            });
+        }
+        setCandlestickData(klinesData);
+        setVolumeData(volumeData);
+    };
 
-//     return () => {
-//       socket.disconnect();
-//     };
-//   }, []);
+    const fetchRealTimeData = () => {
+        APIS.binance
+            .get_symbol_klines(symbol, interval)
+            .then((res) => {
+                const data = res.data;
+                formatDataToChart(data["models"]);
+            })
+            .catch((e) => {
+                console.log(`Error ${e}`);
+            });
+    };
 
-  return (
-    <div>
-      {/* <ApexCharts options={options} series={[{ data }]} type="candlestick" height={350} />
-      <ApexCharts options={options} series={[{ data: volumeData }]} type="bar" height={160} /> */}
-    </div>
-  );
+    useEffect(() => {
+        fetchRealTimeData();
+    }, [symbol, interval]);
+
+    return (
+        <div className="w-100">
+            {symbol}
+            <ButtonGroupComponent
+                interval={interval}
+                setInterval={setInterval}
+            />
+            {!_.isEmpty(candlestickData) && (
+                <ApexCharts
+                    options={candlestickOptions}
+                    series={[{ data: candlestickData }]}
+                    type="candlestick"
+                    he
+                    ight={300}
+                />
+            )}
+            {!_.isEmpty(volumeData) && (
+                <ApexCharts
+                    options={volumeOptions}
+                    series={[{ name: "Volume", data: volumeData }]}
+                    type="bar"
+                    height={110}
+                />
+            )}
+        </div>
+    );
 };
 
 export default RealTimeCandlestickChart;
