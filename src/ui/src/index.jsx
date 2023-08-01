@@ -4,6 +4,7 @@ import App from 'components/index';
 import Home from 'components/Home/index';
 import Binance from 'components/Binance/index';
 import CoinMarketCap from 'components/CoinMarketCap/index';
+import Analytics from 'components/Analytics';
 import { routingPaths } from 'common/routers';
 import {
     Route,
@@ -19,6 +20,7 @@ const router = createBrowserRouter(
             <Route path={routingPaths.home} element={<Home />} />
             <Route path={routingPaths.binance} element={<Binance />} />
             <Route path={routingPaths.coinMarketCap} element={<CoinMarketCap />} />
+            <Route path={routingPaths.analytics} element={<Analytics />} />
             {/* <Route
                 path={routingPaths.detailAlgorithm}
                 element={<DetailAlgorithm />}

@@ -14,7 +14,6 @@ SYMBOL_ID_MAPPING = {
     "SHIB": 5994,
     "TRX": 1958,
     "XRP": 52,
-
 }
 CRAWL_INTERVAL = 10  # 10 secs
 CMC_POSTS_KAFKA_TOPIC = "cmc.posts"

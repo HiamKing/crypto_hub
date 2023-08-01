@@ -23,6 +23,14 @@ export default function Header() {
                     CoinMarketCap
                 </NavLink>
             </div>
+            <div className="header-btn">
+                <NavLink
+                    className="header-btn-link"
+                    to={routingPaths.analytics}
+                >
+                    Analytics
+                </NavLink>
+            </div>
         </div>
     );
 }
