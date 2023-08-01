@@ -19,6 +19,8 @@ const APIS = {
     analytics: {
         search_statistics: (args) =>
             axios.post(`${API_ROOT}/analytics/search-statistics`, args),
+        search_relations: (args) =>
+            axios.post(`${API_ROOT}/analytics/search-relations`, args),
     },
 };
 // getOverviewInfo: (args) =>

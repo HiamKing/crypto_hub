@@ -2,22 +2,24 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import ClearableDatePicker from "components/utils/clearableDateTimePicker";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import _ from "lodash"
+import _ from "lodash";
 
 export default function AnalyticsFilters({
     symbolOptions,
     setSymbol,
+    startTime,
     setStartTime,
+    endTime,
     setEndTime,
     setGranularity,
     fetchStatistics,
 }) {
     const updateStartTime = (newStartTime) => {
-        setStartTime(newStartTime.toISOString());
+        setStartTime(newStartTime);
     };
 
     const updateEndtime = (newEndTime) => {
-        setEndTime(newEndTime.toISOString());
+        setEndTime(newEndTime);
     };
 
     const StartClearableDatePicker = (props) => {
@@ -37,7 +39,9 @@ export default function AnalyticsFilters({
                     size="small"
                     id="symbolInput"
                     options={symbolOptions}
-                    onChange={(e, newVal) => setSymbol(_.get(newVal, "label", ""))}
+                    onChange={(e, newVal) =>
+                        setSymbol(_.get(newVal, "label", ""))
+                    }
                     renderInput={(params) => <TextField {...params} />}
                 />
             </div>
@@ -46,6 +50,7 @@ export default function AnalyticsFilters({
                 <DateTimePicker
                     views={["year", "day", "hours"]}
                     ampm={false}
+                    value={startTime}
                     slotProps={{ textField: { size: "small" } }}
                     onChange={updateStartTime}
                     slots={{ textField: StartClearableDatePicker }}
@@ -56,6 +61,7 @@ export default function AnalyticsFilters({
                 <DateTimePicker
                     views={["year", "day", "hours"]}
                     ampm={false}
+                    value={endTime}
                     slotProps={{ textField: { size: "small" } }}
                     onChange={updateEndtime}
                     slots={{ textField: EndClearableDatePicker }}
@@ -72,12 +78,18 @@ export default function AnalyticsFilters({
                         { label: "day" },
                         { label: "month" },
                     ]}
-                    onChange={(e, newVal) => setGranularity(_.get(newVal, "label", ""))}
+                    onChange={(e, newVal) =>
+                        setGranularity(_.get(newVal, "label", ""))
+                    }
                     renderInput={(params) => <TextField {...params} />}
                 />
             </div>
             <div className="d-flex justify-content-center">
-                <button type="button" class="btn btn-outline-dark" onClick={fetchStatistics}>
+                <button
+                    type="button"
+                    class="btn btn-outline-dark"
+                    onClick={fetchStatistics}
+                >
                     Search
                 </button>
             </div>
