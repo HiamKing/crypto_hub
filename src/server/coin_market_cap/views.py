@@ -27,11 +27,11 @@ def search_posts(filters, limit, offset, with_count, sort_by):
         filters["text_content"] = {"$regex": f"{filters['text_content']}"}
     stream_filters = copy.deepcopy(filters)
     models = []
-    latest_batch_post = list(crypto_hub_db[CMC_POSTS_COLLECTION].find(filters).sort([(sort_by, -1)]).limit(1))
-    if ("post_time" not in stream_filters or "$gte" not in stream_filters["post_time"]) and len(latest_batch_post):
-        if "post_time" not in stream_filters:
-            stream_filters["post_time"] = {}
-        stream_filters["post_time"]["$gt"] = latest_batch_post[0]["post_time"]
+    latest_batch_post = crypto_hub_db[CMC_POSTS_COLLECTION].find_one(filters, sort=[(sort_by, -1)])
+    if "post_time" not in stream_filters:
+        stream_filters["post_time"] = {}
+    if "$gte" not in stream_filters["post_time"] or (latest_batch_post and latest_batch_post["post_time"] > stream_filters["post_time"]["$gte"]):
+        stream_filters["post_time"]["$gt"] = latest_batch_post["post_time"]
 
     stream_cursor = crypto_hub_db[CMC_STREAM_POSTS_COLLECTION]
     batch_cursor = crypto_hub_db[CMC_POSTS_COLLECTION]
@@ -71,11 +71,11 @@ def search_news(filters, limit, offset, with_count, sort_by):
         filters["title"] = {"$regex": f"{filters['title']}"}
     stream_filters = copy.deepcopy(filters)
     models = []
-    latest_batch_news = list(crypto_hub_db[CMC_NEWS_COLLECTION].find(filters).sort([(sort_by, -1)]).limit(1))
-    if ("updated_at" not in stream_filters or "$gte" not in stream_filters["updated_at"]) and len(latest_batch_news):
-        if "updated_at" not in stream_filters:
-            stream_filters["updated_at"] = {}
-        stream_filters["updated_at"]["$gt"] = latest_batch_news[0]["updated_at"]
+    latest_batch_news = crypto_hub_db[CMC_NEWS_COLLECTION].find_one(filters, sort=[(sort_by, -1)])
+    if "updated_at" not in stream_filters:
+        stream_filters["updated_at"] = {}
+    if "$gte" not in stream_filters["updated_at"] or (latest_batch_news and latest_batch_news["updated_at"] > stream_filters["updated_at"]["$gte"]):
+        stream_filters["updated_at"]["$gt"] = latest_batch_news["updated_at"]
 
     stream_cursor = crypto_hub_db[CMC_STREAM_NEWS_COLLECTION]
     batch_cursor = crypto_hub_db[CMC_NEWS_COLLECTION]
