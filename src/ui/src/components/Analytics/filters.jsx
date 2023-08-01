@@ -2,6 +2,7 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import ClearableDatePicker from "components/utils/clearableDateTimePicker";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
+import _ from "lodash"
 
 export default function AnalyticsFilters({
     symbolOptions,
@@ -9,6 +10,7 @@ export default function AnalyticsFilters({
     setStartTime,
     setEndTime,
     setGranularity,
+    fetchStatistics,
 }) {
     const updateStartTime = (newStartTime) => {
         setStartTime(newStartTime.toISOString());
@@ -35,6 +37,7 @@ export default function AnalyticsFilters({
                     size="small"
                     id="symbolInput"
                     options={symbolOptions}
+                    onChange={(e, newVal) => setSymbol(_.get(newVal, "label", ""))}
                     renderInput={(params) => <TextField {...params} />}
                 />
             </div>
@@ -69,11 +72,14 @@ export default function AnalyticsFilters({
                         { label: "day" },
                         { label: "month" },
                     ]}
+                    onChange={(e, newVal) => setGranularity(_.get(newVal, "label", ""))}
                     renderInput={(params) => <TextField {...params} />}
                 />
             </div>
             <div className="d-flex justify-content-center">
-                <button type="button" class="btn btn-outline-dark">Search</button>
+                <button type="button" class="btn btn-outline-dark" onClick={fetchStatistics}>
+                    Search
+                </button>
             </div>
         </div>
     );

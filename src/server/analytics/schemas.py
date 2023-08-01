@@ -1,14 +1,19 @@
 from marshmallow import Schema, fields
 
 
-class Statistics(Schema):
-    stats_time = fields.DateTime()
+class PostsStatistics(Schema):
+    stats_time = fields.String()
+    posts_count = fields.Integer()
+
+
+class NewsStatistics(Schema):
+    stats_time = fields.String()
     news_count = fields.Integer()
-    post_count = fields.Integer()
 
 
 class StatisticsResponseSchema(Schema):
-    models = fields.List(fields.Nested(Statistics))
+    posts_series = fields.List(fields.Nested(PostsStatistics))
+    news_series = fields.List(fields.Nested(NewsStatistics))
 
 
 class AnalyticsSearch(Schema):
