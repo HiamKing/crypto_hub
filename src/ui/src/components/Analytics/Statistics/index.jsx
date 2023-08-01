@@ -13,6 +13,7 @@ export default function Statistics() {
     const [endTime, setEndTime] = useState("");
     const [granularity, setGranularity] = useState("");
     const [series, setSeries] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
     const fetchStatistics = () => {
@@ -26,28 +27,23 @@ export default function Statistics() {
             .then((res) => {
                 const data = res.data;
                 const newSeries = [];
-                console.log(data)
-                newSeries.push({
-                    name: "News count",
-                    data: _.map(data["news_series"], (e) => [
-                        dayjs(e["stats_time"])
-                            .utc(true)
-                            .local()
-                            .format("YYYY-MM-DDTHH:mm:ss"),
-                        e["news_count"],
-                    ]),
-                });
+                console.log(data);
                 newSeries.push({
                     name: "Posts count",
-                    data: _.map(data["posts_series"], (e) => [
-                        dayjs(e["stats_time"])
+                    data: _.map(data["models"], (e) => e[1]),
+                });
+                newSeries.push({
+                    name: "News count",
+                    data: _.map(data["models"], (e) => e[2]),
+                });
+                setCategories(
+                    _.map(data["models"], (e) =>
+                        dayjs(e[0])
                             .utc(true)
                             .local()
-                            .format("YYYY-MM-DDTHH:mm:ss"),
-                        e["posts_count"],
-                    ]),
-                });
-                console.log(newSeries);
+                            .format("YYYY-MM-DDTHH:mm:ss")
+                    )
+                );
                 setSeries(newSeries);
             })
             .catch((e) => {
@@ -68,7 +64,7 @@ export default function Statistics() {
                 />
             </Box>
             <Box className="" sx={{ height: "100%", width: "75%" }}>
-                <StatisticsChart symbol={symbol} series={series} />
+                <StatisticsChart symbol={symbol} series={series} categories={categories}/>
             </Box>
         </>
     );

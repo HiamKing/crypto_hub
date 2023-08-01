@@ -11,6 +11,8 @@ COIN_NAME_MAPPING = {
     "XRP": "XRP",
 }
 
+TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
+
 CMC_POSTS_ASSOC_COLLECTION = "cmc.posts_assoc"
 CMC_NEWS_ASSOC_COLLECTION = "cmc.news_assoc"
 CMC_STREAM_POSTS_ASSOC_COLLECTION = "cmc.stream.posts_assoc"

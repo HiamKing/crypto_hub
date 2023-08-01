@@ -12,8 +12,7 @@ class NewsStatistics(Schema):
 
 
 class StatisticsResponseSchema(Schema):
-    posts_series = fields.List(fields.Nested(PostsStatistics))
-    news_series = fields.List(fields.Nested(NewsStatistics))
+    models = fields.List(fields.List(fields.Raw()))
 
 
 class AnalyticsSearch(Schema):

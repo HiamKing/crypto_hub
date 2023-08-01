@@ -1,7 +1,7 @@
 import ReactApexChart from "react-apexcharts";
 import dayjs from "dayjs";
 
-export default function StatisticsChart({ symbol, series }) {
+export default function StatisticsChart({ symbol, series, categories}) {
     const options = {
         chart: {
             type: "bar",
@@ -15,6 +15,7 @@ export default function StatisticsChart({ symbol, series }) {
         },
         xaxis: {
             type: "datetime",
+            categories: categories,
             labels: {
                 datetimeUTC: false,
             },
