@@ -4,6 +4,11 @@ import dayjs from "dayjs";
 export default function RelationsChart(props) {
     const { symbol, baseSeries, quoteSeries, baseCategories, quoteCategories } =
         props;
+
+    if (baseSeries.length === 0) {
+        return <></>
+    }
+
     const priceMax =
         Math.max(...baseSeries[2]["data"]) + Math.max(...baseSeries[2]["data"]) / 100;
     const priceMin =

@@ -2,6 +2,10 @@ import ReactApexChart from "react-apexcharts";
 import dayjs from "dayjs";
 
 export default function StatisticsChart({ symbol, series, categories }) {
+    if (series.length === 0) {
+        return <></>
+    }
+
     const options = {
         chart: {
             type: "bar",
